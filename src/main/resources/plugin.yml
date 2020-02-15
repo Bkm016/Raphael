@@ -1,0 +1,9 @@
+name: Raphael
+main: ink.ptms.raphael.Raphael
+api-version: 1.13
+author: 坏黑
+
+version: ${version}
+
+depend:
+  - Vault
