@@ -30,17 +30,16 @@ private class Events : Listener {
         if (e.eventType != EventType.VARIABLE) {
             Bukkit.getScheduler().runTask(Raphael.getPlugin(), Runnable { RaphaelAPI.updatePermission() })
         }
-        Bukkit.getScheduler().runTaskAsynchronously(Raphael.getPlugin(), Runnable {
-            RaphaelAPI.database.writeLogs(JsonObject().run {
-                this.addProperty("event", "PLAYER")
-                this.addProperty("eventType", e.eventType.name)
-                this.addProperty("eventAction", e.eventAction.name)
-                this.addProperty("name", e.asVariableKey())
-                this.addProperty("data", e.asVariableValue())
-                this.addProperty("time", e.time)
-                this.addProperty("reason", e.reason)
-                this
-            }.toString())
+        RaphaelAPI.writeLogs(JsonObject().run {
+            this.addProperty("event", "PLAYER")
+            this.addProperty("eventType", e.eventType.name)
+            this.addProperty("eventAction", e.eventAction.name)
+            this.addProperty("id", e.player.name)
+            this.addProperty("name", e.asVariableKey())
+            this.addProperty("data", e.asVariableValue())
+            this.addProperty("time", e.time)
+            this.addProperty("reason", e.reason)
+            this
         })
     }
 
@@ -49,18 +48,15 @@ private class Events : Listener {
         if (e.eventType == EventType.PERMISSION) {
             Bukkit.getScheduler().runTask(Raphael.getPlugin(), Runnable { RaphaelAPI.getGroupPlayers(e.group).forEach { RaphaelAPI.updatePermission(it) } })
         }
-        Bukkit.getScheduler().runTaskAsynchronously(Raphael.getPlugin(), Runnable {
-            Bukkit.getScheduler().runTaskAsynchronously(Raphael.getPlugin(), Runnable {
-                RaphaelAPI.database.writeLogs(JsonObject().run {
-                    this.addProperty("event", "GROUP")
-                    this.addProperty("eventType", e.eventType.name)
-                    this.addProperty("eventAction", e.eventAction.name)
-                    this.addProperty("name", e.asVariableKey())
-                    this.addProperty("data", e.asVariableValue())
-                    this.addProperty("reason", e.reason)
-                    this
-                }.toString())
-            })
+        RaphaelAPI.writeLogs(JsonObject().run {
+            this.addProperty("event", "GROUP")
+            this.addProperty("eventType", e.eventType.name)
+            this.addProperty("eventAction", e.eventAction.name)
+            this.addProperty("id", e.group)
+            this.addProperty("name", e.asVariableKey())
+            this.addProperty("data", e.asVariableValue())
+            this.addProperty("reason", e.reason)
+            this
         })
     }
 

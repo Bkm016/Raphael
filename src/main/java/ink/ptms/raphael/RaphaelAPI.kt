@@ -1,6 +1,7 @@
 package ink.ptms.raphael
 
 import com.google.common.collect.Maps
+import com.google.gson.JsonObject
 import ink.ptms.raphael.module.data.DatabaseSQL
 import ink.ptms.raphael.module.data.DatabaseYML
 import ink.ptms.raphael.module.permission.PermissibleData
@@ -75,5 +76,13 @@ object RaphaelAPI {
             this.addAll(permission.playerGroups(player).value.flatMap { permission.groupPermissions(it.name) })
             this
         }
+    }
+
+    fun writeLogs(json: JsonObject) {
+        Bukkit.getScheduler().runTaskAsynchronously(Raphael.getPlugin(), Runnable { RaphaelAPI.database.writeLogs(json.toString()) })
+    }
+
+    fun writeLogs(json: () -> JsonObject) {
+        Bukkit.getScheduler().runTaskAsynchronously(Raphael.getPlugin(), Runnable { RaphaelAPI.database.writeLogs(json.invoke().toString()) })
     }
 }

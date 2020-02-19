@@ -23,6 +23,7 @@ import java.util.ArrayList
 class DatabaseYML : Database() {
 
     val format = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+    val formatDay = SimpleDateFormat("yyyy/MM/dd")
 
     override fun getData(player: Player): FileConfiguration {
         return LocalPlayer.get(player)
@@ -32,7 +33,7 @@ class DatabaseYML : Database() {
     }
 
     override fun writeLogs(data: String) {
-        Writer.writeAppend(Files.file(Raphael.getPlugin().dataFolder, "logs.txt")) { r ->
+        Writer.writeAppend(Files.file(Raphael.getPlugin().dataFolder, "logs/${formatDay.format(System.currentTimeMillis())}.txt")) { r ->
             r.write(System.currentTimeMillis().toString() + "    " + format.format(System.currentTimeMillis()) + "    " + data)
             r.newLine()
         }
@@ -40,7 +41,7 @@ class DatabaseYML : Database() {
 
     override fun readLogs(time: Long): List<Log> {
         val logs = ArrayList<Log>()
-        Files.read(Files.file(Raphael.getPlugin().dataFolder, "logs.txt")) { r ->
+        Files.read(Files.file(Raphael.getPlugin().dataFolder, "logs/${formatDay.format(System.currentTimeMillis())}.txt")) { r ->
             r.lines().forEach { line ->
                 val log = line.split("    ").run {
                     if (time == 0L || time > System.currentTimeMillis() - NumberConversions.toLong(this[0])) {
