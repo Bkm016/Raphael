@@ -79,10 +79,19 @@ object RaphaelAPI {
     }
 
     fun writeLogs(json: JsonObject) {
-        Bukkit.getScheduler().runTaskAsynchronously(Raphael.getPlugin(), Runnable { RaphaelAPI.database.writeLogs(json.toString()) })
+        writeLogs { json }
     }
 
-    fun writeLogs(json: () -> JsonObject) {
-        Bukkit.getScheduler().runTaskAsynchronously(Raphael.getPlugin(), Runnable { RaphaelAPI.database.writeLogs(json.invoke().toString()) })
+    fun writeLogs(container: () -> JsonObject) {
+        if (!Raphael.CONF.getBoolean("Logs.enable")) {
+            return
+        }
+        Bukkit.getScheduler().runTaskAsynchronously(Raphael.getPlugin(), Runnable {
+            val json = container.invoke()
+            val jsonCaller = json.get("caller")?.asString
+            if (jsonCaller != "unknown" && Raphael.CONF.getStringList("ignore").any { jsonCaller?.startsWith(it) == true }) {
+                RaphaelAPI.database.writeLogs(json.toString())
+            }
+        })
     }
 }

@@ -5,3 +5,8 @@ Database:
   password: root
   database: test
   table: raphael_database
+
+Logs:
+  enable: true
+  ignore:
+    - org.bukkit.command.Command
