@@ -89,7 +89,7 @@ object RaphaelAPI {
         Bukkit.getScheduler().runTaskAsynchronously(Raphael.getPlugin(), Runnable {
             val json = container.invoke()
             val jsonCaller = json.get("caller")?.asString
-            if (jsonCaller != "unknown" && Raphael.CONF.getStringList("ignore").any { jsonCaller?.startsWith(it) == true }) {
+            if (jsonCaller != "unknown" && Raphael.CONF.getStringList("Logs.ignore").none { jsonCaller?.startsWith(it) == true }) {
                 RaphaelAPI.database.writeLogs(json.toString())
             }
         })
