@@ -8,7 +8,7 @@ import ink.ptms.raphael.api.EventType
 import ink.ptms.raphael.api.RaphaelGroupEvent
 import ink.ptms.raphael.api.RaphaelPlayerEvent
 import io.izzel.taboolib.module.inject.TListener
-import io.izzel.taboolib.util.UNSAFE
+import io.izzel.taboolib.util.Ref
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -63,7 +63,7 @@ private class Events : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun e(e: PlayerJoinEvent) {
         try {
-            perm[e.player.name] = (UNSAFE.allocateInstance(PermissibleRaphael::class.java) as PermissibleRaphael).run {
+            perm[e.player.name] = (Ref.getUnsafe().allocateInstance(PermissibleRaphael::class.java) as PermissibleRaphael).run {
                 this.init(e.player)
                 this
             }
@@ -87,7 +87,7 @@ private class Events : Listener {
     fun init() {
         Bukkit.getOnlinePlayers().forEach { player ->
             try {
-                perm[player.name] = (UNSAFE.allocateInstance(PermissibleRaphael::class.java) as PermissibleRaphael).run {
+                perm[player.name] = (Ref.getUnsafe().allocateInstance(PermissibleRaphael::class.java) as PermissibleRaphael).run {
                     this.init(player)
                     this
                 }
