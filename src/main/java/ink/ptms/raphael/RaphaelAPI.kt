@@ -39,7 +39,7 @@ object RaphaelAPI {
     }
 
     fun getGroupPlayers(group: String): List<Player> {
-        return Bukkit.getOnlinePlayers().filter { permission.playerInGroup(it, group) }
+        return Bukkit.getOnlinePlayers().filter { group == "default" || permission.playerInGroup(it, group) }
     }
 
     fun updatePermission() {
@@ -74,6 +74,7 @@ object RaphaelAPI {
         return ArrayList<String>().run {
             this.addAll(permission.playerPermissions(player).value.map { it.name })
             this.addAll(permission.playerGroups(player).value.flatMap { permission.groupPermissions(it.name) })
+            this.addAll(permission.groupPermissions("default"))
             this
         }
     }

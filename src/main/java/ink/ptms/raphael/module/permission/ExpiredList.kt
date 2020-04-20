@@ -6,7 +6,7 @@ package ink.ptms.raphael.module.permission
  */
 class ExpiredList(source: List<*>) {
 
-    val value = source.filter { it is Map<*, *> }.map { ExpiredValue(it as Map<*, *>) }.toMutableList()
+    val value = source.filterIsInstance<Map<*, *>>().map { ExpiredValue(it) }.toMutableList()
 
     fun removeExpired(): ExpiredList {
         value.removeIf { it.isExpired() }

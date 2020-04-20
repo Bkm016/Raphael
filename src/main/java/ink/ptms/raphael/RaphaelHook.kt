@@ -101,12 +101,11 @@ class RaphaelHook : Permission() {
     }
 
     override fun getPlayerGroups(world: String, player: String): Array<String> {
-        return playerGroups(Bukkit.getPlayerExact(player)
-                ?: return emptyArray()).value.filterNot { it.isExpired() }.map { it.name }.toTypedArray()
+        return playerGroups(Bukkit.getPlayerExact(player) ?: return emptyArray()).value.filterNot { it.isExpired() }.map { it.name }.toTypedArray()
     }
 
     override fun playerInGroup(world: String, player: String, group: String): Boolean {
-        return playerInGroup(Bukkit.getPlayerExact(player) ?: return false, group)
+        return getPlayerGroups(world, player).contains(group)
     }
 
     /**
@@ -297,7 +296,7 @@ class RaphaelHook : Permission() {
         }
         data().set("Groups.${event.group}.Permissions", data().getStringList("Groups.${event.group}.Permissions").toMutableSet().run {
             this.add(event.asPermission())
-            this
+            this.toList()
         })
         return true
     }
@@ -312,7 +311,7 @@ class RaphaelHook : Permission() {
         }
         data().set("Groups.${event.group}.Permissions", data().getStringList("Groups.${event.group}.Permissions").toMutableSet().run {
             this.remove(event.asPermission())
-            this
+            this.toList()
         })
         return true
     }
