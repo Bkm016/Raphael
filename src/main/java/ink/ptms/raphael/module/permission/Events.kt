@@ -46,7 +46,13 @@ private class Events : Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun e(e: RaphaelGroupEvent) {
         if (e.eventType == EventType.PERMISSION) {
-            Bukkit.getScheduler().runTask(Raphael.getPlugin(), Runnable { RaphaelAPI.getGroupPlayers(e.group).forEach { RaphaelAPI.updatePermission(it) } })
+            Bukkit.getScheduler().runTask(Raphael.getPlugin(), Runnable {
+                if (e.group == "default") {
+                    Bukkit.getOnlinePlayers().forEach { RaphaelAPI.updatePermission(it) }
+                } else {
+                    RaphaelAPI.getGroupPlayers(e.group).forEach { RaphaelAPI.updatePermission(it) }
+                }
+            })
         }
         RaphaelAPI.writeLogs(JsonObject().run {
             this.addProperty("event", "GROUP")

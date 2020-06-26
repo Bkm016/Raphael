@@ -39,7 +39,7 @@ object RaphaelAPI {
     }
 
     fun getGroupPlayers(group: String): List<Player> {
-        return Bukkit.getOnlinePlayers().filter { group == "default" || permission.playerInGroup(it, group) }
+        return Bukkit.getOnlinePlayers().filter { permission.playerInGroup(it, group) }
     }
 
     fun updatePermission() {

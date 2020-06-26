@@ -239,7 +239,7 @@ class RaphaelHook : Permission() {
         if (event.call().isCancelled) {
             return false
         }
-        data.set("Permissions", playerGroups(player).run {
+        data.set("Permissions", playerPermissions(player).run {
             val first = this.value.firstOrNull { it.name == event.asPermission() }
             if (first != null) {
                 first.expired += event.time
