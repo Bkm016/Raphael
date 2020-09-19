@@ -1,9 +1,15 @@
+Logs:
+  enable: false
+  ignore:
+    - org.bukkit.command.Command
+
 DatabaseMongo:
   enable: false
   client: mongodb://localhost:27001
   database: raphael
   collection: raphael
 
+# SQL 储存原地暴毙不再提供任何更新与支持
 DatabaseSQL:
   enable: false
   host: ~
@@ -12,8 +18,3 @@ DatabaseSQL:
   password: root
   database: test
   table: raphael_database
-
-Logs:
-  enable: false
-  ignore:
-    - org.bukkit.command.Command

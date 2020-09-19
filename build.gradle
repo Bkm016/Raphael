@@ -22,6 +22,7 @@ repositories {
 
 dependencies {
     compile 'ink.ptms.core:v11600:11600:all'
+    compile 'com.mongodb:MongoDB:3.12.2:all'
     compile 'org.jetbrains.kotlin:kotlin-stdlib'
     compileOnly fileTree(dir: 'libs', includes: ['*.jar'])
 }

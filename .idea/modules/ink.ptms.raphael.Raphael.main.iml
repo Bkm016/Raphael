@@ -8,7 +8,7 @@
         </compilerSettings>
         <compilerArguments>
           <option name="destination" value="$MODULE_DIR$/../../build/classes/kotlin/main" />
-          <option name="classpath" value="$MODULE_DIR$/../../libs/Vault.jar;D:/development/Gradle/repo/caches/modules-2/files-2.1/ink.ptms.core/v11600/11600/17382393705ab318f9c0d4d369fc1b9231dc968f/v11600-11600-all.jar;D:/development/Gradle/repo/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.0-rc/aaffe62d7edab3b254a15f410ded317c6869e5b8/kotlin-stdlib-1.4.0-rc.jar;D:/development/Gradle/repo/caches/modules-2/files-2.1/io.izzel.taboolib/TabooLib/5.36/a282b9b3f0ad0d2e27dec5da642730bb96415ac0/TabooLib-5.36-all.jar;D:/development/Gradle/repo/caches/modules-2/files-2.1/io.izzel.taboolib/TabooLibLoader/2.6/d26ff36164f4816c631078c4b35dac6175e910e4/TabooLibLoader-2.6-all.jar;D:/development/Gradle/repo/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4.0-rc/4f17246362f6cbcf924f199a06619a4f77b51335/kotlin-stdlib-common-1.4.0-rc.jar;D:/development/Gradle/repo/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
+          <option name="classpath" value="$MODULE_DIR$/../../libs/Vault.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/ink.ptms.core/v11600/11600/17382393705ab318f9c0d4d369fc1b9231dc968f/v11600-11600-all.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/com.mongodb/MongoDB/3.12.2/da3edf3643e6aa01ce34448153bac362f98f83e9/MongoDB-3.12.2-all.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.0-rc/aaffe62d7edab3b254a15f410ded317c6869e5b8/kotlin-stdlib-1.4.0-rc.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/io.izzel.taboolib/TabooLib/5.36/a282b9b3f0ad0d2e27dec5da642730bb96415ac0/TabooLib-5.36-all.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/io.izzel.taboolib/TabooLibLoader/2.6/d26ff36164f4816c631078c4b35dac6175e910e4/TabooLibLoader-2.6-all.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4.0-rc/4f17246362f6cbcf924f199a06619a4f77b51335/kotlin-stdlib-common-1.4.0-rc.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
           <option name="moduleName" value="Raphael" />
@@ -19,13 +19,13 @@
           </option>
           <option name="pluginClasspaths">
             <array>
-              <option value="$MODULE_DIR$/../../../../../development/Gradle/repo/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-script-runtime/1.4.0-rc/d886838f5eab46611b857dfcbdcd66f19b0c4115/kotlin-script-runtime-1.4.0-rc.jar" />
-              <option value="$MODULE_DIR$/../../../../../development/Gradle/repo/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-common/1.4.0-rc/90098c31ad534e2eb35e31e36c71021de8054d71/kotlin-scripting-common-1.4.0-rc.jar" />
-              <option value="$MODULE_DIR$/../../../../../development/Gradle/repo/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-jvm/1.4.0-rc/e855436f720aa032da475c3c941c9176d484e9f/kotlin-scripting-jvm-1.4.0-rc.jar" />
-              <option value="$MODULE_DIR$/../../../../../development/Gradle/repo/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4.0-rc/4f17246362f6cbcf924f199a06619a4f77b51335/kotlin-stdlib-common-1.4.0-rc.jar" />
-              <option value="$MODULE_DIR$/../../../../../development/Gradle/repo/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.0-rc/aaffe62d7edab3b254a15f410ded317c6869e5b8/kotlin-stdlib-1.4.0-rc.jar" />
-              <option value="$MODULE_DIR$/../../../../../development/Gradle/repo/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core/1.3.7/8e2eb78158638b33793d204ffef0b65c4a578e1c/kotlinx-coroutines-core-1.3.7.jar" />
-              <option value="$MODULE_DIR$/../../../../../development/Gradle/repo/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-script-runtime/1.4.0-rc/d886838f5eab46611b857dfcbdcd66f19b0c4115/kotlin-script-runtime-1.4.0-rc.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-common/1.4.0-rc/90098c31ad534e2eb35e31e36c71021de8054d71/kotlin-scripting-common-1.4.0-rc.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-jvm/1.4.0-rc/e855436f720aa032da475c3c941c9176d484e9f/kotlin-scripting-jvm-1.4.0-rc.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4.0-rc/4f17246362f6cbcf924f199a06619a4f77b51335/kotlin-stdlib-common-1.4.0-rc.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.0-rc/aaffe62d7edab3b254a15f410ded317c6869e5b8/kotlin-stdlib-1.4.0-rc.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core/1.3.7/8e2eb78158638b33793d204ffef0b65c4a578e1c/kotlinx-coroutines-core-1.3.7.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
             </array>
           </option>
           <option name="errors">
@@ -61,6 +61,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Gradle: ink.ptms.core:v11600:all:11600" level="project" />
+    <orderEntry type="library" name="Gradle: com.mongodb:MongoDB:all:3.12.2" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.4.0-rc" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: io.izzel.taboolib:TabooLib:all:5.36" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: io.izzel.taboolib:TabooLibLoader:all:2.6" level="project" />

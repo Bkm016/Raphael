@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: com.mongodb:MongoDB:all:3.12.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mongodb/MongoDB/3.12.2/da3edf3643e6aa01ce34448153bac362f98f83e9/MongoDB-3.12.2-all.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
