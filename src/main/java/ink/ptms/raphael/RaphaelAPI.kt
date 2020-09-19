@@ -2,11 +2,11 @@ package ink.ptms.raphael
 
 import com.google.common.collect.Maps
 import com.google.gson.JsonObject
+import ink.ptms.raphael.module.data.DatabaseMongo
 import ink.ptms.raphael.module.data.DatabaseSQL
 import ink.ptms.raphael.module.data.DatabaseYML
 import ink.ptms.raphael.module.permission.PermissibleData
 import io.izzel.taboolib.module.inject.PlayerContainer
-import io.izzel.taboolib.module.inject.TFunction
 import net.milkbowl.vault.permission.Permission
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -20,9 +20,16 @@ object RaphaelAPI {
     }
 
     val database by lazy {
-        if (Raphael.CONF.contains("Database.host")) {
+        if (Raphael.conf.getBoolean("DatabaseSQL.enable")) {
             try {
                 return@lazy DatabaseSQL()
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
+        }
+        if (Raphael.conf.getBoolean("DatabaseMongo.enable")) {
+            try {
+                return@lazy DatabaseMongo()
             } catch (t: Throwable) {
                 t.printStackTrace()
             }
@@ -72,8 +79,10 @@ object RaphaelAPI {
 
     fun getPermissions(player: Player): List<String> {
         return ArrayList<String>().run {
+            permission.playerGroups(player).value.forEach {
+                this.addAll(permission.groupPermissions(it.name))
+            }
             this.addAll(permission.playerPermissions(player).value.map { it.name })
-            this.addAll(permission.playerGroups(player).value.flatMap { permission.groupPermissions(it.name) })
             this.addAll(permission.groupPermissions("default"))
             this
         }
@@ -84,14 +93,14 @@ object RaphaelAPI {
     }
 
     fun writeLogs(container: () -> JsonObject) {
-        if (!Raphael.CONF.getBoolean("Logs.enable")) {
+        if (!Raphael.conf.getBoolean("Logs.enable")) {
             return
         }
-        Bukkit.getScheduler().runTaskAsynchronously(Raphael.getPlugin(), Runnable {
+        Bukkit.getScheduler().runTaskAsynchronously(Raphael.plugin, Runnable {
             val json = container.invoke()
             val jsonCaller = json.get("caller")?.asString
-            if (jsonCaller != "unknown" && Raphael.CONF.getStringList("Logs.ignore").none { jsonCaller?.startsWith(it) == true }) {
-                RaphaelAPI.database.writeLogs(json.toString())
+            if (jsonCaller != "unknown" && Raphael.conf.getStringList("Logs.ignore").none { jsonCaller?.startsWith(it) == true }) {
+                database.writeLogs(json.toString())
             }
         })
     }

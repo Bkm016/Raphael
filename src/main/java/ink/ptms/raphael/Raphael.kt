@@ -1,25 +1,24 @@
-package ink.ptms.raphael;
+package ink.ptms.raphael
 
-import io.izzel.taboolib.loader.Plugin;
-import io.izzel.taboolib.module.config.TConfig;
-import io.izzel.taboolib.module.inject.TInject;
-import net.milkbowl.vault.permission.Permission;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.ServicePriority;
+import ink.ptms.raphael.RaphaelAPI.permission
+import io.izzel.taboolib.loader.Plugin
+import io.izzel.taboolib.module.config.TConfig
+import io.izzel.taboolib.module.inject.TInject
+import net.milkbowl.vault.permission.Permission
+import org.bukkit.Bukkit
+import org.bukkit.plugin.ServicePriority
 
-@Plugin.Version(5.15)
-public final class Raphael extends Plugin {
+object Raphael : Plugin() {
 
     @TInject
-    public static TConfig CONF = null;
+    lateinit var conf: TConfig
+        private set
 
-    @Override
-    public void onLoading() {
-        Bukkit.getServicesManager().register(Permission.class, new RaphaelHook(), getPlugin(), ServicePriority.Normal);
+    override fun onLoad() {
+        Bukkit.getServicesManager().register(Permission::class.java, RaphaelHook(), plugin, ServicePriority.Normal)
     }
 
-    @Override
-    public void onStopping() {
-        Bukkit.getServicesManager().unregister(RaphaelAPI.INSTANCE.getPermission());
+    override fun onDisable() {
+        Bukkit.getServicesManager().unregister(permission)
     }
 }

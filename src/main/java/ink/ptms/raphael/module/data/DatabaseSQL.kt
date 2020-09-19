@@ -2,8 +2,7 @@ package ink.ptms.raphael.module.data
 
 import ink.ptms.raphael.Raphael
 import io.izzel.taboolib.module.db.source.DBSource
-import io.izzel.taboolib.module.db.sql.SQLHost
-import io.izzel.taboolib.module.db.sql.SQLTable
+import io.izzel.taboolib.module.db.sql.*
 import io.izzel.taboolib.module.db.sql.query.Where
 import io.izzel.taboolib.module.inject.PlayerContainer
 import org.bukkit.configuration.file.FileConfiguration
@@ -23,9 +22,9 @@ import javax.sql.DataSource
 class DatabaseSQL : Database() {
 
     val format = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-    val host = SQLHost(Raphael.CONF.getConfigurationSection("Database"), Raphael.getPlugin(), true)
-    val table = SQLTable(Raphael.CONF.getString("Database.table")).column("\$primary_key_id", "text:name", "text:data")!!
-    val tableLogs = SQLTable(Raphael.CONF.getString("Database.table") + "_logs").column("\$primary_key_id", "text:data", "bigint:time", "text:time_formatted")!!
+    val host = SQLHost(Raphael.conf.getConfigurationSection("Database"), Raphael.getPlugin(), true)
+    val table = SQLTable(Raphael.conf.getString("Database.table")).column(SQLColumn(SQLColumnType.VARCHAR, 64, "name").columnOptions(SQLColumnOption.PRIMARY_KEY)).column("text:data")!!
+    val tableLogs = SQLTable(Raphael.conf.getString("Database.table") + "_logs").column("\$primary_key_id", "text:data", "bigint:time", "text:time_formatted")!!
     val dataSource: DataSource = DBSource.create(host)
 
     init {
@@ -38,7 +37,7 @@ class DatabaseSQL : Database() {
     }
 
     override fun getData(player: Player): FileConfiguration {
-        player.setMetadata("raphael:save", FixedMetadataValue(Raphael.getPlugin(), true))
+        player.setMetadata("raphael:save", FixedMetadataValue(Raphael.plugin, true))
         return when {
             dataMap.contains(player.name) -> dataMap[player.name]!!
             isExists(player) -> dataMap.computeIfAbsent(player.name) { get(player) }
@@ -54,7 +53,7 @@ class DatabaseSQL : Database() {
         if (isExists(player)) {
             table.update(Where.`is`("name", player.name)).set("data", Base64.getEncoder().encodeToString(data.saveToString().toByteArray(StandardCharsets.UTF_8))).run(dataSource)
         } else {
-            table.insert(null, player.name, Base64.getEncoder().encodeToString(data.saveToString().toByteArray(StandardCharsets.UTF_8))).run(dataSource)
+            table.insert(player.name, Base64.getEncoder().encodeToString(data.saveToString().toByteArray(StandardCharsets.UTF_8))).run(dataSource)
         }
     }
 

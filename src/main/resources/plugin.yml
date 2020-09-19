@@ -1,9 +1,16 @@
-name: Raphael
-main: ink.ptms.raphael.Raphael
-api-version: 1.13
-author: 坏黑
 
+
+#         Powered by TabooLib 5.0         #
+
+
+name: ${name}
+main: ${main}
 version: ${version}
+authors: ['坏黑']
+
+lib-download: true
+lib-version: ${libVersion}
+api-version: 1.13
 
 depend:
   - Vault
