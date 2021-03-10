@@ -4,7 +4,6 @@ import com.mongodb.client.model.Filters
 import ink.ptms.raphael.Raphael
 import io.izzel.taboolib.cronus.bridge.CronusBridge
 import io.izzel.taboolib.cronus.bridge.database.IndexType
-import io.izzel.taboolib.module.db.sql.SQLHost
 import org.bson.Document
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player

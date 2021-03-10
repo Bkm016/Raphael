@@ -8,13 +8,3 @@ DatabaseMongo:
   client: mongodb://localhost:27001
   database: raphael
   collection: raphael
-
-# SQL 储存原地暴毙不再提供任何更新与支持
-DatabaseSQL:
-  enable: false
-  host: ~
-  port: 3306
-  user: root
-  password: root
-  database: test
-  table: raphael_database

@@ -2,7 +2,6 @@ package ink.ptms.raphael.api
 
 import io.izzel.taboolib.module.event.EventCancellable
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
 
 /**
  * @Author sky

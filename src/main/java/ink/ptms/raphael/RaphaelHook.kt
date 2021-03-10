@@ -11,7 +11,6 @@ import net.milkbowl.vault.permission.Permission
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
-import kotlin.collections.ArrayList
 
 /**
  * @Author sky

@@ -1,7 +1,6 @@
 package ink.ptms.raphael.module.permission
 
-import io.izzel.taboolib.module.lite.SimpleReflection
-import org.bukkit.entity.Player
+import io.izzel.taboolib.kotlin.Reflex.Companion.reflex
 import org.bukkit.permissions.PermissionAttachment
 
 /**
@@ -11,10 +10,5 @@ import org.bukkit.permissions.PermissionAttachment
 @Suppress("UNCHECKED_CAST")
 class PermissibleData(val permissionAttachment: PermissionAttachment) {
 
-    var permissions: MutableMap<String, Boolean>
-
-    init {
-        SimpleReflection.checkAndSave(PermissionAttachment::class.java)
-        permissions = SimpleReflection.getFieldValue(PermissionAttachment::class.java, permissionAttachment, "permissions") as MutableMap<String, Boolean>
-    }
+    var permissions = permissionAttachment.reflex<Map<String, Boolean>>("permissions")!!.toMutableMap()
 }

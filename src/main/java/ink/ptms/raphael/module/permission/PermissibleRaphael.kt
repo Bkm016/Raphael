@@ -4,13 +4,14 @@ import com.google.gson.JsonObject
 import ink.ptms.raphael.Raphael
 import ink.ptms.raphael.RaphaelAPI
 import ink.ptms.raphael.api.nms.NMS
-import io.izzel.taboolib.TabooLib
-import io.izzel.taboolib.TabooLibAPI
 import io.izzel.taboolib.Version
 import io.izzel.taboolib.module.db.local.Local
 import io.izzel.taboolib.util.Ref
 import org.bukkit.entity.HumanEntity
-import org.bukkit.permissions.*
+import org.bukkit.permissions.PermissibleBase
+import org.bukkit.permissions.Permission
+import org.bukkit.permissions.PermissionAttachment
+import org.bukkit.permissions.PermissionAttachmentInfo
 import org.bukkit.plugin.Plugin
 
 /**
@@ -30,7 +31,7 @@ class PermissibleRaphael : PermissibleBase(null) {
     }
 
     fun cancel() {
-        NMS.HANDLE.setPermissibleBase(humanEntity, this.permissibleBase)
+        NMS.HANDLE.setPermissibleBase(humanEntity ?: return, permissibleBase ?: return)
     }
 
     override fun isPermissionSet(s: String): Boolean {

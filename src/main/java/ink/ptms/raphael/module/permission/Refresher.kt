@@ -2,10 +2,8 @@ package ink.ptms.raphael.module.permission
 
 import ink.ptms.raphael.RaphaelAPI
 import io.izzel.taboolib.module.inject.TSchedule
-import io.izzel.taboolib.module.inject.TService
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
-import org.bukkit.entity.Player
 
 object Refresher {
 

@@ -8,7 +8,7 @@
         </compilerSettings>
         <compilerArguments>
           <option name="destination" value="$MODULE_DIR$/../../build/classes/kotlin/main" />
-          <option name="classpath" value="$MODULE_DIR$/../../libs/Vault.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/ink.ptms.core/v11600/11600/17382393705ab318f9c0d4d369fc1b9231dc968f/v11600-11600-all.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/com.mongodb/MongoDB/3.12.2/da3edf3643e6aa01ce34448153bac362f98f83e9/MongoDB-3.12.2-all.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.0-rc/aaffe62d7edab3b254a15f410ded317c6869e5b8/kotlin-stdlib-1.4.0-rc.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/io.izzel.taboolib/TabooLib/5.36/a282b9b3f0ad0d2e27dec5da642730bb96415ac0/TabooLib-5.36-all.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/io.izzel.taboolib/TabooLibLoader/2.6/d26ff36164f4816c631078c4b35dac6175e910e4/TabooLibLoader-2.6-all.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4.0-rc/4f17246362f6cbcf924f199a06619a4f77b51335/kotlin-stdlib-common-1.4.0-rc.jar:/Users/bkm016/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
+          <option name="classpath" value="$MODULE_DIR$/../../libs/Vault.jar:/Users/sky/.gradle/caches/modules-2/files-2.1/ink.ptms.core/v11600/11600/17382393705ab318f9c0d4d369fc1b9231dc968f/v11600-11600-all.jar:/Users/sky/.gradle/caches/modules-2/files-2.1/com.mongodb/MongoDB/3.12.2/da3edf3643e6aa01ce34448153bac362f98f83e9/MongoDB-3.12.2-all.jar:/Users/sky/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.0-rc/aaffe62d7edab3b254a15f410ded317c6869e5b8/kotlin-stdlib-1.4.0-rc.jar:/Users/sky/.gradle/caches/modules-2/files-2.1/io.izzel.taboolib/TabooLib/5.58/b4bbb2210feba4bc5740d16a0e6dd25dabbd5030/TabooLib-5.58-all.jar:/Users/sky/.gradle/caches/modules-2/files-2.1/io.izzel.taboolib/TabooLibLoader/2.12/145d29457c23205a98332206560fc76033b4843e/TabooLibLoader-2.12-all.jar:/Users/sky/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4.0-rc/4f17246362f6cbcf924f199a06619a4f77b51335/kotlin-stdlib-common-1.4.0-rc.jar:/Users/sky/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
           <option name="moduleName" value="Raphael" />
@@ -63,8 +63,8 @@
     <orderEntry type="library" name="Gradle: ink.ptms.core:v11600:all:11600" level="project" />
     <orderEntry type="library" name="Gradle: com.mongodb:MongoDB:all:3.12.2" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.4.0-rc" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.izzel.taboolib:TabooLib:all:5.36" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.izzel.taboolib:TabooLibLoader:all:2.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.izzel.taboolib:TabooLib:all:5.58" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.izzel.taboolib:TabooLibLoader:all:2.12" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0-rc" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
   </component>

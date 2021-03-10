@@ -1,14 +1,12 @@
 package ink.ptms.raphael.util
 
-import io.izzel.taboolib.module.command.base.CommandTab
 import io.izzel.taboolib.module.command.lite.CompleterTab
 import org.bukkit.Bukkit
-import java.util.ArrayList
 
 object Utils {
 
     fun playerTab(): CompleterTab {
-        return CompleterTab { sender, args ->
+        return CompleterTab { _, args ->
             Bukkit.getOnlinePlayers().map { it.name }.filter { it.toLowerCase().startsWith(args.last().toLowerCase()) }
         }
     }

@@ -1,20 +1,14 @@
 package ink.ptms.raphael.module.data
 
 import ink.ptms.raphael.Raphael
-import ink.ptms.raphael.RaphaelAPI
-import ink.ptms.raphael.util.Writer
 import io.izzel.taboolib.module.db.local.LocalPlayer
 import io.izzel.taboolib.util.ArrayUtil
 import io.izzel.taboolib.util.Files
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.util.NumberConversions
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.ArrayList
+import java.util.*
 
 /**
  * @Author sky
@@ -33,7 +27,7 @@ class DatabaseYML : Database() {
     }
 
     override fun writeLogs(data: String) {
-        Writer.writeAppend(Files.file(Raphael.getPlugin().dataFolder, "logs/${formatDay.format(System.currentTimeMillis())}.txt")) { r ->
+        Files.writeAppend(Files.file(Raphael.plugin.dataFolder, "logs/${formatDay.format(System.currentTimeMillis())}.txt")) { r ->
             r.write(System.currentTimeMillis().toString() + "    " + format.format(System.currentTimeMillis()) + "    " + data)
             r.newLine()
         }
@@ -41,7 +35,7 @@ class DatabaseYML : Database() {
 
     override fun readLogs(time: Long): List<Log> {
         val logs = ArrayList<Log>()
-        Files.read(Files.file(Raphael.getPlugin().dataFolder, "logs/${formatDay.format(System.currentTimeMillis())}.txt")) { r ->
+        Files.read(Files.file(Raphael.plugin.dataFolder, "logs/${formatDay.format(System.currentTimeMillis())}.txt")) { r ->
             r.lines().forEach { line ->
                 val log = line.split("    ").run {
                     if (time == 0L || time > System.currentTimeMillis() - NumberConversions.toLong(this[0])) {

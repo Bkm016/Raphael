@@ -3,7 +3,6 @@ package ink.ptms.raphael
 import com.google.common.collect.Maps
 import com.google.gson.JsonObject
 import ink.ptms.raphael.module.data.DatabaseMongo
-import ink.ptms.raphael.module.data.DatabaseSQL
 import ink.ptms.raphael.module.data.DatabaseYML
 import ink.ptms.raphael.module.permission.PermissibleData
 import io.izzel.taboolib.module.inject.PlayerContainer
@@ -20,13 +19,6 @@ object RaphaelAPI {
     }
 
     val database by lazy {
-        if (Raphael.conf.getBoolean("DatabaseSQL.enable")) {
-            try {
-                return@lazy DatabaseSQL()
-            } catch (t: Throwable) {
-                t.printStackTrace()
-            }
-        }
         if (Raphael.conf.getBoolean("DatabaseMongo.enable")) {
             try {
                 return@lazy DatabaseMongo()

@@ -1,18 +1,18 @@
 package ink.ptms.raphael.module.command
 
+import ink.ptms.raphael.Raphael
 import ink.ptms.raphael.RaphaelAPI
 import ink.ptms.raphael.util.Utils
-import io.izzel.taboolib.cronus.CronusUtils
 import io.izzel.taboolib.module.command.lite.CommandBuilder
 import io.izzel.taboolib.module.inject.TInject
 import io.izzel.taboolib.module.tellraw.TellrawJson
 import io.izzel.taboolib.util.Commands
-import org.bukkit.Bukkit
 
+@Suppress("SpellCheckingInspection")
 object CommandGroup : CommandHandle() {
 
     @TInject
-    val raphaelGroupAdd = CommandBuilder.create("RaphaelGroupAdd", null)
+    val raphaelGroupAdd: CommandBuilder = CommandBuilder.create("RaphaelGroupAdd", Raphael.plugin)
             .permission("raphael.command")
             .aliases("rgadd", "mangadd")
             .tab(Utils.playerTab())
@@ -33,7 +33,7 @@ object CommandGroup : CommandHandle() {
             }
 
     @TInject
-    val raphaelGroupDel = CommandBuilder.create("raphaelGroupDel", null)
+    val raphaelGroupDel: CommandBuilder = CommandBuilder.create("raphaelGroupDel", Raphael.plugin)
             .permission("raphael.command")
             .aliases("rgdel", "mangdel")
             .tab(Utils.playerTab())
@@ -54,7 +54,7 @@ object CommandGroup : CommandHandle() {
             }
 
     @TInject
-    val raphaelGroupAddVariable = CommandBuilder.create("RaphaelGroupAddVariable", null)
+    val raphaelGroupAddVariable: CommandBuilder = CommandBuilder.create("RaphaelGroupAddVariable", Raphael.plugin)
             .permission("raphael.command")
             .aliases("rgaddv", "mangaddv")
             .tab(Utils.playerTab())
@@ -75,7 +75,7 @@ object CommandGroup : CommandHandle() {
             }
 
     @TInject
-    val raphaelGroupDelVariable = CommandBuilder.create("RaphaelGroupDelVariable", null)
+    val raphaelGroupDelVariable: CommandBuilder = CommandBuilder.create("RaphaelGroupDelVariable", Raphael.plugin)
             .permission("raphael.command")
             .aliases("rgdelv", "mangdelv")
             .tab(Utils.playerTab())
@@ -96,7 +96,7 @@ object CommandGroup : CommandHandle() {
             }
 
     @TInject
-    val raphaelGroupAddPermission = CommandBuilder.create("RaphaelGroupAddPermission", null)
+    val raphaelGroupAddPermission: CommandBuilder = CommandBuilder.create("RaphaelGroupAddPermission", Raphael.plugin)
             .permission("raphael.command")
             .aliases("rgaddp", "mangaddp")
             .tab(Utils.playerTab())
@@ -117,7 +117,7 @@ object CommandGroup : CommandHandle() {
             }
 
     @TInject
-    val raphaelGroupDelPermission = CommandBuilder.create("RaphaelGroupDelPermission", null)
+    val raphaelGroupDelPermission: CommandBuilder = CommandBuilder.create("RaphaelGroupDelPermission", Raphael.plugin)
             .permission("raphael.command")
             .aliases("rgdelp", "mangdelp")
             .tab(Utils.playerTab())
@@ -138,7 +138,7 @@ object CommandGroup : CommandHandle() {
             }
 
     @TInject
-    val raphaelGroupClearPermission = CommandBuilder.create("RaphaelGroupClearPermission", null)
+    val raphaelGroupClearPermission: CommandBuilder = CommandBuilder.create("RaphaelGroupClearPermission", Raphael.plugin)
             .permission("raphael.command")
             .aliases("rgclearp", "mangclearp")
             .tab(Utils.playerTab())
@@ -160,7 +160,7 @@ object CommandGroup : CommandHandle() {
             }
 
     @TInject
-    val raphaelGroupClearVariables = CommandBuilder.create("RaphaelGroupClearVariables", null)
+    val raphaelGroupClearVariables: CommandBuilder = CommandBuilder.create("RaphaelGroupClearVariables", Raphael.plugin)
             .permission("raphael.command")
             .aliases("rgclearv", "mangclearv")
             .tab(Utils.playerTab())
@@ -183,7 +183,7 @@ object CommandGroup : CommandHandle() {
 
 
     @TInject
-    val raphaelGroupListPermission = CommandBuilder.create("RaphaelGroupListPermission", null)
+    val raphaelGroupListPermission: CommandBuilder = CommandBuilder.create("RaphaelGroupListPermission", Raphael.plugin)
             .permission("raphael.command")
             .aliases("rglistp", "manglistp")
             .tab(Utils.playerTab())
@@ -211,7 +211,7 @@ object CommandGroup : CommandHandle() {
             }
 
     @TInject
-    val raphaelGroupListVariables = CommandBuilder.create("RaphaelGroupListVariables", null)
+    val raphaelGroupListVariables: CommandBuilder = CommandBuilder.create("RaphaelGroupListVariables", Raphael.plugin)
             .permission("raphael.command")
             .aliases("rglistv", "manglistv")
             .tab(Utils.playerTab())
@@ -241,7 +241,7 @@ object CommandGroup : CommandHandle() {
             }
 
     @TInject
-    val raphaelUserInfo = CommandBuilder.create("RaphaelGroupInfo", null)
+    val raphaelUserInfo: CommandBuilder = CommandBuilder.create("RaphaelGroupInfo", Raphael.plugin)
             .permission("raphael.command")
             .aliases("rginfo", "rgwhois", "mangwhois")
             .tab(Utils.playerTab())
