@@ -10,11 +10,11 @@ import org.bukkit.permissions.PermissibleBase
  */
 class NMSHandle : NMS() {
 
-    override fun setPermissibleBase(player: HumanEntity, permissibleBase: PermissibleBase) {
-        player.reflex("perm", permissibleBase)
+    override fun setPermissibleBase(player: HumanEntity?, permissibleBase: PermissibleBase) {
+        player?.reflex("perm", permissibleBase)
     }
 
-    override fun getPermissibleBase(player: HumanEntity): PermissibleBase {
-        return player.reflex("perm")!!
+    override fun getPermissibleBase(player: HumanEntity?): PermissibleBase? {
+        return player?.reflex("perm")
     }
 }

@@ -10,9 +10,9 @@ import org.bukkit.permissions.PermissibleBase
  */
 abstract class NMS {
 
-    abstract fun setPermissibleBase(player: HumanEntity, permissibleBase: PermissibleBase)
+    abstract fun setPermissibleBase(player: HumanEntity?, permissibleBase: PermissibleBase)
 
-    abstract fun getPermissibleBase(player: HumanEntity): PermissibleBase
+    abstract fun getPermissibleBase(player: HumanEntity?): PermissibleBase?
 
     companion object {
 
