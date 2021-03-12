@@ -2,10 +2,12 @@ package ink.ptms.raphael.module.command
 
 import ink.ptms.raphael.Raphael
 import ink.ptms.raphael.RaphaelAPI
+import ink.ptms.raphael.module.permission.ExpiredValue
 import ink.ptms.raphael.util.Utils
 import io.izzel.taboolib.cronus.CronusUtils
 import io.izzel.taboolib.module.command.lite.CommandBuilder
 import io.izzel.taboolib.module.inject.TInject
+import io.izzel.taboolib.module.locale.TLocale
 import io.izzel.taboolib.module.tellraw.TellrawJson
 import io.izzel.taboolib.util.Commands
 import org.bukkit.Bukkit
@@ -260,21 +262,21 @@ object CommandUser : CommandHandle() {
                     return@execute
                 }
                 notify(sender, "Player \"&f${player!!.name}&7\"'s Permissions:")
-                val list = RaphaelAPI.permission.playerPermissions(player)
-                if (list.value.isEmpty()) {
+                val list = RaphaelAPI.permission.playerPermissions(player).value.toMutableList()
+                if (list.isEmpty()) {
                     notify(sender, "- §fNULL")
                 } else {
-                    list.value.forEach { permission ->
+                    list.forEach { permission ->
                         TellrawJson.create()
                                 .append("§c[Raphael] §7- §f")
                                 .append(permission.name).hoverText("§nCOPY").clickSuggest(permission.name)
                                 .run {
                                     if (permission.expired == 0L) {
-                                        this.append(" §8(expired: §f-§8)")
+                                        append(" §8(expired: §f-§8)")
                                     } else {
-                                        this.append(" §8(expired: §f${format.format(permission.expired)}§8)")
+                                        append(" §8(expired: §f${format.format(permission.expired)}§8)")
                                     }
-                                    this.send(sender)
+                                    send(sender)
                                 }
                     }
                 }
@@ -334,21 +336,24 @@ object CommandUser : CommandHandle() {
                     return@execute
                 }
                 notify(sender, "Player \"&f${player!!.name}&7\"'s Groups:")
-                val list = RaphaelAPI.permission.playerGroups(player)
-                if (list.value.isEmpty()) {
+                val list = RaphaelAPI.permission.playerGroups(player).value.toMutableList()
+                if (RaphaelAPI.permission.groupPermissions("default").isNotEmpty()) {
+                    list.add(ExpiredValue("default"))
+                }
+                if (list.isEmpty()) {
                     notify(sender, "- §fNULL")
                 } else {
-                    list.value.forEach { group ->
+                    list.forEach { group ->
                         TellrawJson.create()
                                 .append("§c[Raphael] §7- §f")
                                 .append(group.name).hoverText("§nCOPY").clickSuggest(group.name)
                                 .run {
                                     if (group.expired == 0L) {
-                                        this.append(" §8(expired: §f-§8)")
+                                        append(" §8(expired: §f-§8)")
                                     } else {
-                                        this.append(" §8(expired: §f${format.format(group.expired)}§8)")
+                                        append(" §8(expired: §f${format.format(group.expired)}§8)")
                                     }
-                                    this.send(sender)
+                                    send(sender)
                                 }
                     }
                 }

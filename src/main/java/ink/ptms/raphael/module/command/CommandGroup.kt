@@ -189,7 +189,7 @@ object CommandGroup : CommandHandle() {
             .tab(Utils.playerTab())
             .execute { sender, args ->
                 if (args.isEmpty()) {
-                    notify(sender, "Usage: /rglistp [player]")
+                    notify(sender, "Usage: /rglistp [group]")
                     return@execute
                 }
                 if (!RaphaelAPI.permission.groups.contains(args[0])) {
@@ -217,7 +217,7 @@ object CommandGroup : CommandHandle() {
             .tab(Utils.playerTab())
             .execute { sender, args ->
                 if (args.isEmpty()) {
-                    notify(sender, "Usage: /rglistv [player]")
+                    notify(sender, "Usage: /rglistv [group]")
                     return@execute
                 }
                 if (!RaphaelAPI.permission.groups.contains(args[0])) {
@@ -247,7 +247,7 @@ object CommandGroup : CommandHandle() {
             .tab(Utils.playerTab())
             .execute { sender, args ->
                 if (args.isEmpty()) {
-                    notify(sender, "Usage: /rginfo [player]")
+                    notify(sender, "Usage: /rginfo [group]")
                     return@execute
                 }
                 if (!RaphaelAPI.permission.groups.contains(args[0])) {
