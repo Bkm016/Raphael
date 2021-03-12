@@ -20,7 +20,7 @@ import org.bukkit.plugin.Plugin
  */
 class PermissibleRaphael : PermissibleBase(null) {
 
-    val data = Local.get().get("data.yml")
+    val data = Local.get().get("data.yml")!!
     var humanEntity: HumanEntity? = null
     var permissibleBase: PermissibleBase? = null
 
@@ -35,11 +35,11 @@ class PermissibleRaphael : PermissibleBase(null) {
     }
 
     override fun isPermissionSet(s: String): Boolean {
-        return this.permissibleBase!!.isPermissionSet(s)
+        return this.permissibleBase?.isPermissionSet(s) == true
     }
 
     override fun isPermissionSet(permission: Permission): Boolean {
-        return this.permissibleBase!!.isPermissionSet(permission)
+        return this.permissibleBase?.isPermissionSet(permission) == true
     }
 
     override fun hasPermission(s: String): Boolean {
@@ -54,7 +54,7 @@ class PermissibleRaphael : PermissibleBase(null) {
                 this
             }
         }
-        return this.permissibleBase!!.hasPermission(s)
+        return this.permissibleBase?.hasPermission(s) == true
     }
 
     override fun hasPermission(permission: Permission): Boolean {
@@ -69,7 +69,7 @@ class PermissibleRaphael : PermissibleBase(null) {
                 this
             }
         }
-        return this.permissibleBase!!.hasPermission(permission)
+        return this.permissibleBase?.hasPermission(permission) == true
     }
 
     override fun addAttachment(plugin: Plugin, s: String, b: Boolean): PermissionAttachment {
@@ -81,23 +81,23 @@ class PermissibleRaphael : PermissibleBase(null) {
     }
 
     override fun addAttachment(plugin: Plugin, s: String, b: Boolean, i: Int): PermissionAttachment? {
-        return this.permissibleBase!!.addAttachment(plugin, s, b, i)
+        return this.permissibleBase?.addAttachment(plugin, s, b, i)
     }
 
     override fun addAttachment(plugin: Plugin, i: Int): PermissionAttachment? {
-        return this.permissibleBase!!.addAttachment(plugin, i)
+        return this.permissibleBase?.addAttachment(plugin, i)
     }
 
     override fun removeAttachment(permissionAttachment: PermissionAttachment) {
-        this.permissibleBase!!.removeAttachment(permissionAttachment)
+        this.permissibleBase?.removeAttachment(permissionAttachment)
     }
 
     override fun recalculatePermissions() {
-        this.permissibleBase!!.recalculatePermissions()
+        this.permissibleBase?.recalculatePermissions()
     }
 
     override fun getEffectivePermissions(): Set<PermissionAttachmentInfo> {
-        return this.permissibleBase!!.effectivePermissions
+        return this.permissibleBase?.effectivePermissions ?: emptySet()
     }
 
     override fun isOp(): Boolean {
@@ -111,7 +111,7 @@ class PermissibleRaphael : PermissibleBase(null) {
                 this
             }
         }
-        return this.permissibleBase!!.isOp
+        return this.permissibleBase?.isOp == true
     }
 
     override fun setOp(b: Boolean) {
@@ -126,7 +126,7 @@ class PermissibleRaphael : PermissibleBase(null) {
                 this
             }
         }
-        this.permissibleBase!!.isOp = b
+        this.permissibleBase?.isOp = b
     }
 
     fun getCaller(elements: Array<StackTraceElement>): String {
