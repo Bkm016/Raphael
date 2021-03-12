@@ -10,5 +10,5 @@ import org.bukkit.permissions.PermissionAttachment
 @Suppress("UNCHECKED_CAST")
 class PermissibleData(val permissionAttachment: PermissionAttachment) {
 
-    var permissions = permissionAttachment.reflex<Map<String, Boolean>>("permissions")!!.toMutableMap()
+    var permissions = permissionAttachment.reflex<MutableMap<String, Boolean>>("permissions")!!
 }

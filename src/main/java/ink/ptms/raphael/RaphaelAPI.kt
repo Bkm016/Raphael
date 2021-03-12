@@ -46,7 +46,7 @@ object RaphaelAPI {
     }
 
     fun updatePermission(player: Player) {
-        val data = attachment.computeIfAbsent(player.name) { PermissibleData(player.addAttachment(Raphael.getPlugin())) }
+        val data = attachment.computeIfAbsent(player.name) { PermissibleData(player.addAttachment(Raphael.plugin)) }
         val map = getPermissions(player).map { permission ->
             Pair(if (permission[0] == '-') permission.substring(1) else permission, !permission.startsWith("-"))
         }
