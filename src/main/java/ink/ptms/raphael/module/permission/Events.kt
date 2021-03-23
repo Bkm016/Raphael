@@ -1,12 +1,11 @@
 package ink.ptms.raphael.module.permission
 
 import com.google.common.collect.Maps
-import com.google.gson.JsonObject
-import ink.ptms.raphael.Raphael
 import ink.ptms.raphael.RaphaelAPI
 import ink.ptms.raphael.api.EventType
 import ink.ptms.raphael.api.RaphaelGroupEvent
 import ink.ptms.raphael.api.RaphaelPlayerEvent
+import io.izzel.taboolib.kotlin.Tasks
 import io.izzel.taboolib.module.inject.TListener
 import io.izzel.taboolib.util.Ref
 import org.bukkit.Bukkit
@@ -28,49 +27,53 @@ private class Events : Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun e(e: RaphaelPlayerEvent) {
         if (e.eventType != EventType.VARIABLE) {
-            Bukkit.getScheduler().runTask(Raphael.getPlugin(), Runnable { RaphaelAPI.updatePermission() })
+            Tasks.task {
+                RaphaelAPI.updatePermission()
+            }
         }
-        RaphaelAPI.writeLogs(JsonObject().run {
-            this.addProperty("event", "PLAYER")
-            this.addProperty("eventType", e.eventType.name)
-            this.addProperty("eventAction", e.eventAction.name)
-            this.addProperty("id", e.player.name)
-            this.addProperty("name", e.asVariableKey())
-            this.addProperty("data", e.asVariableValue())
-            this.addProperty("time", e.time)
-            this.addProperty("reason", e.reason)
-            this
-        })
+        RaphaelAPI.writeLogs {
+            addProperty("event", "PLAYER")
+            addProperty("eventType", e.eventType.name)
+            addProperty("eventAction", e.eventAction.name)
+            addProperty("id", e.player.name)
+            addProperty("name", e.asVariableKey())
+            addProperty("data", e.asVariableValue())
+            addProperty("time", e.time)
+            addProperty("reason", e.reason)
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun e(e: RaphaelGroupEvent) {
         if (e.eventType == EventType.PERMISSION) {
-            Bukkit.getScheduler().runTask(Raphael.getPlugin(), Runnable {
+            Tasks.task {
                 if (e.group == "default") {
-                    Bukkit.getOnlinePlayers().forEach { RaphaelAPI.updatePermission(it) }
+                    Bukkit.getOnlinePlayers().forEach {
+                        RaphaelAPI.updatePermission(it)
+                    }
                 } else {
-                    RaphaelAPI.getGroupPlayers(e.group).forEach { RaphaelAPI.updatePermission(it) }
+                    RaphaelAPI.getGroupPlayers(e.group).forEach {
+                        RaphaelAPI.updatePermission(it)
+                    }
                 }
-            })
+            }
         }
-        RaphaelAPI.writeLogs(JsonObject().run {
-            this.addProperty("event", "GROUP")
-            this.addProperty("eventType", e.eventType.name)
-            this.addProperty("eventAction", e.eventAction.name)
-            this.addProperty("id", e.group)
-            this.addProperty("name", e.asVariableKey())
-            this.addProperty("data", e.asVariableValue())
-            this.addProperty("reason", e.reason)
-            this
-        })
+        RaphaelAPI.writeLogs {
+            addProperty("event", "GROUP")
+            addProperty("eventType", e.eventType.name)
+            addProperty("eventAction", e.eventAction.name)
+            addProperty("id", e.group)
+            addProperty("name", e.asVariableKey())
+            addProperty("data", e.asVariableValue())
+            addProperty("reason", e.reason)
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun e(e: PlayerJoinEvent) {
         try {
             perm[e.player.name] = (Ref.getUnsafe().allocateInstance(PermissibleRaphael::class.java) as PermissibleRaphael).run {
-                this.init(e.player)
+                init(e.player)
                 this
             }
         } catch (t: Throwable) {
@@ -94,7 +97,7 @@ private class Events : Listener {
         Bukkit.getOnlinePlayers().forEach { player ->
             try {
                 perm[player.name] = (Ref.getUnsafe().allocateInstance(PermissibleRaphael::class.java) as PermissibleRaphael).run {
-                    this.init(player)
+                    init(player)
                     this
                 }
             } catch (t: Throwable) {

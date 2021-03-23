@@ -1,18 +1,19 @@
 package ink.ptms.raphael.module.permission
 
-import com.google.gson.JsonObject
 import ink.ptms.raphael.Raphael
 import ink.ptms.raphael.RaphaelAPI
 import ink.ptms.raphael.api.nms.NMS
 import io.izzel.taboolib.Version
 import io.izzel.taboolib.module.db.local.Local
 import io.izzel.taboolib.util.Ref
+import org.bukkit.Bukkit
 import org.bukkit.entity.HumanEntity
 import org.bukkit.permissions.PermissibleBase
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionAttachment
 import org.bukkit.permissions.PermissionAttachmentInfo
 import org.bukkit.plugin.Plugin
+import java.util.*
 
 /**
  * @Author sky
@@ -35,105 +36,102 @@ class PermissibleRaphael : PermissibleBase(null) {
     }
 
     override fun isPermissionSet(s: String): Boolean {
-        return this.permissibleBase?.isPermissionSet(s) == true
+        return permissibleBase?.isPermissionSet(s) == true
     }
 
     override fun isPermissionSet(permission: Permission): Boolean {
-        return this.permissibleBase?.isPermissionSet(permission) == true
+        return permissibleBase?.isPermissionSet(permission) == true
     }
 
     override fun hasPermission(s: String): Boolean {
-        val elements = Thread.currentThread().stackTrace
-        RaphaelAPI.writeLogs {
-            JsonObject().run {
-                this.addProperty("event", "API")
-                this.addProperty("eventType", "hasPermission")
-                this.addProperty("id", humanEntity?.name)
-                this.addProperty("name", s)
-                this.addProperty("caller", getCaller(elements))
-                this
+        if (humanEntity == null || permissibleBase == null) {
+            return false
+        }
+        Thread.currentThread().stackTrace.also { elements ->
+            RaphaelAPI.writeLogs {
+                addProperty("event", "API")
+                addProperty("eventType", "hasPermission")
+                addProperty("id", humanEntity!!.name)
+                addProperty("name", s)
+                addProperty("caller", getCaller(elements))
             }
         }
-        return this.permissibleBase?.hasPermission(s) == true
+        val manager = Bukkit.getServer().pluginManager
+        val name = s.toLowerCase(Locale.ENGLISH)
+        permissibleBase!!.effectivePermissions.forEach {
+            if (it.permission == name) {
+                return it.value
+            }
+            val bukkitPermission = manager.getPermission(it.permission)
+            if (bukkitPermission != null && bukkitPermission.children[name] == true) {
+                return it.value
+            }
+        }
+        return manager.getPermission(name)?.default?.getValue(isOp) == true
     }
 
     override fun hasPermission(permission: Permission): Boolean {
-        val elements = Thread.currentThread().stackTrace
-        RaphaelAPI.writeLogs {
-            JsonObject().run {
-                this.addProperty("event", "API")
-                this.addProperty("eventType", "hasPermission")
-                this.addProperty("id", humanEntity?.name)
-                this.addProperty("name", permission.name)
-                this.addProperty("caller", getCaller(elements))
-                this
-            }
-        }
-        return this.permissibleBase?.hasPermission(permission) == true
+        return hasPermission(permission.name)
     }
 
     override fun addAttachment(plugin: Plugin, s: String, b: Boolean): PermissionAttachment {
-        return this.permissibleBase!!.addAttachment(plugin, s, b)
+        return permissibleBase!!.addAttachment(plugin, s, b)
     }
 
     override fun addAttachment(plugin: Plugin): PermissionAttachment {
-        return this.permissibleBase!!.addAttachment(plugin)
+        return permissibleBase!!.addAttachment(plugin)
     }
 
     override fun addAttachment(plugin: Plugin, s: String, b: Boolean, i: Int): PermissionAttachment? {
-        return this.permissibleBase?.addAttachment(plugin, s, b, i)
+        return permissibleBase?.addAttachment(plugin, s, b, i)
     }
 
     override fun addAttachment(plugin: Plugin, i: Int): PermissionAttachment? {
-        return this.permissibleBase?.addAttachment(plugin, i)
+        return permissibleBase?.addAttachment(plugin, i)
     }
 
     override fun removeAttachment(permissionAttachment: PermissionAttachment) {
-        this.permissibleBase?.removeAttachment(permissionAttachment)
+        permissibleBase?.removeAttachment(permissionAttachment)
     }
 
     override fun recalculatePermissions() {
-        this.permissibleBase?.recalculatePermissions()
+        permissibleBase?.recalculatePermissions()
     }
 
     override fun getEffectivePermissions(): Set<PermissionAttachmentInfo> {
-        return this.permissibleBase?.effectivePermissions ?: emptySet()
+        return permissibleBase?.effectivePermissions ?: emptySet()
     }
 
     override fun isOp(): Boolean {
-        val elements = Thread.currentThread().stackTrace
-        RaphaelAPI.writeLogs {
-            JsonObject().run {
-                this.addProperty("event", "API")
-                this.addProperty("eventType", "isOp")
-                this.addProperty("id", humanEntity?.name)
-                this.addProperty("caller", getCaller(elements))
-                this
+        Thread.currentThread().stackTrace.also { elements ->
+            RaphaelAPI.writeLogs {
+                addProperty("event", "API")
+                addProperty("eventType", "isOp")
+                addProperty("id", humanEntity?.name)
+                addProperty("caller", getCaller(elements))
             }
         }
-        return this.permissibleBase?.isOp == true
+        return permissibleBase?.isOp == true
     }
 
     override fun setOp(b: Boolean) {
-        val elements = Thread.currentThread().stackTrace
-        RaphaelAPI.writeLogs {
-            JsonObject().run {
-                this.addProperty("event", "API")
-                this.addProperty("eventType", "setOp")
-                this.addProperty("id", humanEntity?.name)
-                this.addProperty("data", b)
-                this.addProperty("caller", getCaller(elements))
-                this
+        Thread.currentThread().stackTrace.also { elements ->
+            RaphaelAPI.writeLogs {
+                addProperty("event", "API")
+                addProperty("eventType", "setOp")
+                addProperty("id", humanEntity?.name)
+                addProperty("data", b)
+                addProperty("caller", getCaller(elements))
             }
         }
-        this.permissibleBase?.isOp = b
+        permissibleBase?.isOp = b
     }
 
     fun getCaller(elements: Array<StackTraceElement>): String {
         elements.filterNot { it.lineNumber == -1 || it.className.contains(Version.getCurrentVersion().name) }.forEach { element ->
             try {
                 val plugin = Ref.getCallerPlugin(Class.forName(element.className))
-                if (plugin != Raphael.getPlugin()) {
+                if (plugin != Raphael.plugin) {
                     return "${element.className}(${element.methodName}:${element.lineNumber})"
                 }
             } catch (t: Throwable) {

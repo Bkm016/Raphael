@@ -1,15 +1,52 @@
 package ink.ptms.raphael.module.data
 
-import org.bukkit.configuration.file.FileConfiguration
+import io.izzel.taboolib.module.inject.TListener
+import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerLoginEvent
 
-abstract class Database {
+/**
+ * Chemdah
+ * ink.ptms.chemdah.core.database.Database
+ *
+ * @author sky
+ * @since 2021/3/3 4:39 下午
+ */
+interface Database {
 
-    abstract fun getData(player: Player): FileConfiguration
+    fun getPermissions(player: Player): SerializedPermissions
 
-    abstract fun saveData(player: Player)
+    fun getVariables(player: Player): SerializedVariables
 
-    abstract fun writeLogs(data: String)
+    fun getGroups(player: Player): SerializedGroups
 
-    abstract fun readLogs(time: Long): List<Log>
+    fun setPermission(player: Player, permission: SerializedPermissions.Permission, value: Boolean)
+
+    fun setVariable(player: Player, variable: SerializedVariables.Variable, value: Boolean)
+
+    fun setGroup(player: Player, group: SerializedGroups.Group, value: Boolean)
+
+    @TListener
+    companion object : Listener {
+
+        val INSTANCE = try {
+            when (Type.INSTANCE) {
+                Type.SQL -> DatabaseSQL()
+                Type.LOCAL -> DatabaseLocal()
+                Type.MONGODB -> DatabaseMongoDB()
+            }
+        } catch (e: Throwable) {
+            DatabaseError(e)
+        }
+
+        @EventHandler
+        fun e(e: PlayerLoginEvent) {
+            if (INSTANCE is DatabaseError) {
+                e.result = PlayerLoginEvent.Result.KICK_OTHER
+                e.kickMessage = TLocale.Translate.setColored("&4&loERROR! &r&oThe &4&lRaphael&r&o database failed to initialize.")
+            }
+        }
+    }
 }

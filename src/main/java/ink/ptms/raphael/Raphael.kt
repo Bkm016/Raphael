@@ -10,7 +10,7 @@ import org.bukkit.plugin.ServicePriority
 
 object Raphael : Plugin() {
 
-    @TInject
+    @TInject(migrate = true)
     lateinit var conf: TConfig
         private set
 

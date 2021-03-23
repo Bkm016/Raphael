@@ -2,14 +2,13 @@ package ink.ptms.raphael.module.command
 
 import ink.ptms.raphael.Raphael
 import ink.ptms.raphael.RaphaelAPI
-import ink.ptms.raphael.module.permission.ExpiredValue
+import ink.ptms.raphael.module.data.SerializedGroups
 import ink.ptms.raphael.util.Utils
 import io.izzel.taboolib.cronus.CronusUtils
 import io.izzel.taboolib.module.command.lite.CommandBuilder
 import io.izzel.taboolib.module.inject.TInject
-import io.izzel.taboolib.module.locale.TLocale
 import io.izzel.taboolib.module.tellraw.TellrawJson
-import io.izzel.taboolib.util.Commands
+import io.izzel.taboolib.util.Features
 import org.bukkit.Bukkit
 
 @Suppress("SpellCheckingInspection")
@@ -170,7 +169,7 @@ object CommandUser : CommandHandle() {
                     notify(sender, "Player \"&f${args[0]}&7\" Not Found.")
                     return@execute
                 }
-                RaphaelAPI.permission.playerPermissions(player!!).value.forEach { permission ->
+                RaphaelAPI.permission.playerPermissions(player!!).validPermissions.forEach { permission ->
                     if (RaphaelAPI.permission.playerRemove(player, permission.name, args.getOrElse(1) { "command by ${sender.name}" })) {
                         notify(sender, "Remove \"&f${permission.name}&7\" from \"&f${player.name}&7\"'s Permissions. &8(reason: ${args.getOrElse(1) { "command by ${sender.name}" }})")
                     }
@@ -193,7 +192,7 @@ object CommandUser : CommandHandle() {
                     notify(sender, "Player \"&f${args[0]}&7\" Not Found.")
                     return@execute
                 }
-                RaphaelAPI.permission.playerVariables(player!!).value.forEach { v ->
+                RaphaelAPI.permission.playerVariables(player!!).variables.forEach { v ->
                     if (RaphaelAPI.permission.playerRemoveVariable(player, v.name, args.getOrElse(1) { "command by ${sender.name}" })) {
                         notify(sender, "Remove \"&f${v.name}&7\" from \"&f${player.name}&7\"'s Variables. &8(reason: ${args.getOrElse(1) { "command by ${sender.name}" }})")
                     }
@@ -216,7 +215,7 @@ object CommandUser : CommandHandle() {
                     notify(sender, "Player \"&f${args[0]}&7\" Not Found.")
                     return@execute
                 }
-                RaphaelAPI.permission.playerGroups(player!!).value.forEach { v ->
+                RaphaelAPI.permission.playerGroups(player!!).validGroups.forEach { v ->
                     if (RaphaelAPI.permission.playerRemoveGroup(player, v.name, args.getOrElse(1) { "command by ${sender.name}" })) {
                         notify(sender, "Remove \"&f${v.name}&7\" from \"&f${player.name}&7\"'s Groups. &8(reason: ${args.getOrElse(1) { "command by ${sender.name}" }})")
                     }
@@ -262,7 +261,7 @@ object CommandUser : CommandHandle() {
                     return@execute
                 }
                 notify(sender, "Player \"&f${player!!.name}&7\"'s Permissions:")
-                val list = RaphaelAPI.permission.playerPermissions(player).value.toMutableList()
+                val list = RaphaelAPI.permission.playerPermissions(player).validPermissions.toMutableList()
                 if (list.isEmpty()) {
                     notify(sender, "- §fNULL")
                 } else {
@@ -298,11 +297,11 @@ object CommandUser : CommandHandle() {
                     return@execute
                 }
                 notify(sender, "Player \"&f${player!!.name}&7\"'s Variables:")
-                val list = RaphaelAPI.permission.playerVariables(player)
-                if (list.value.isEmpty()) {
+                val list = RaphaelAPI.permission.playerVariables(player).validVariables
+                if (list.isEmpty()) {
                     notify(sender, "- §fNULL")
                 } else {
-                    list.value.forEach { v ->
+                    list.forEach { v ->
                         TellrawJson.create()
                                 .append("§c[Raphael] §7- §f")
                                 .append(v.name).hoverText("§nCOPY").clickSuggest(v.name)
@@ -310,11 +309,11 @@ object CommandUser : CommandHandle() {
                                 .append(v.data).hoverText("§nCOPY").clickSuggest(v.data)
                                 .run {
                                     if (v.expired == 0L) {
-                                        this.append(" §8(expired: §f-§8)")
+                                        append(" §8(expired: §f-§8)")
                                     } else {
-                                        this.append(" §8(expired: §f${format.format(v.expired)}§8)")
+                                        append(" §8(expired: §f${format.format(v.expired)}§8)")
                                     }
-                                    this.send(sender)
+                                    send(sender)
                                 }
                     }
                 }
@@ -336,9 +335,9 @@ object CommandUser : CommandHandle() {
                     return@execute
                 }
                 notify(sender, "Player \"&f${player!!.name}&7\"'s Groups:")
-                val list = RaphaelAPI.permission.playerGroups(player).value.toMutableList()
+                val list = RaphaelAPI.permission.playerGroups(player).validGroups.toMutableList()
                 if (RaphaelAPI.permission.groupPermissions("default").isNotEmpty()) {
-                    list.add(ExpiredValue("default"))
+                    list.add(SerializedGroups.Group("default"))
                 }
                 if (list.isEmpty()) {
                     notify(sender, "- §fNULL")
@@ -375,8 +374,8 @@ object CommandUser : CommandHandle() {
                     return@execute
                 }
                 notify(sender, "Information:")
-                Commands.dispatchCommand(sender, "rulistp ${player!!.name}")
-                Commands.dispatchCommand(sender, "rulistv ${player.name}")
-                Commands.dispatchCommand(sender, "rulistg ${player.name}")
+                Features.dispatchCommand(sender, "rulistp ${player!!.name}")
+                Features.dispatchCommand(sender, "rulistv ${player.name}")
+                Features.dispatchCommand(sender, "rulistg ${player.name}")
             }
 }

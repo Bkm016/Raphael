@@ -1,10 +1,24 @@
+
+
+#         Powered by TabooLib 5.0         #
+
+
 Logs:
   enable: false
   ignore:
     - org.bukkit.command.Command
 
-DatabaseMongo:
-  enable: false
-  client: mongodb://localhost:27001
-  database: raphael
-  collection: raphael
+Database:
+  use: SQL
+  source:
+    SQL:
+      host: localhost
+      port: 3306
+      user: root
+      password: root
+      database: test
+      table: raphael
+    MongoDB:
+      client: localhost
+      database: test
+      collection: raphael

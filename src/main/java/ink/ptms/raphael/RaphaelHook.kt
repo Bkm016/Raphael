@@ -4,19 +4,35 @@ import ink.ptms.raphael.api.EventAction
 import ink.ptms.raphael.api.EventType
 import ink.ptms.raphael.api.RaphaelGroupEvent
 import ink.ptms.raphael.api.RaphaelPlayerEvent
-import ink.ptms.raphael.module.permission.ExpiredList
-import ink.ptms.raphael.module.permission.ExpiredValue
+import ink.ptms.raphael.module.data.Database
+import ink.ptms.raphael.module.data.SerializedGroups
+import ink.ptms.raphael.module.data.SerializedPermissions
+import ink.ptms.raphael.module.data.SerializedVariables
 import io.izzel.taboolib.module.db.local.Local
+import io.izzel.taboolib.module.inject.PlayerContainer
 import net.milkbowl.vault.permission.Permission
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * @Author sky
  * @Since 2019-11-27 21:06
  */
 class RaphaelHook : Permission() {
+
+    companion object {
+
+        @PlayerContainer
+        private val permissionsMap = ConcurrentHashMap<String, SerializedPermissions>()
+
+        @PlayerContainer
+        private val variablesMap = ConcurrentHashMap<String, SerializedVariables>()
+
+        @PlayerContainer
+        private val groupsMap = ConcurrentHashMap<String, SerializedGroups>()
+    }
 
     fun data(): FileConfiguration = Local.get().get("data.yml")
 
@@ -32,15 +48,6 @@ class RaphaelHook : Permission() {
         return data().getConfigurationSection("Groups")?.getKeys(false)?.toTypedArray() ?: emptyArray()
     }
 
-    /**
-     * Groups:
-     *   default:
-     *     Variables:
-     *       prefix: test_1
-     *       suffix: test_2
-     *     Permissions:
-     *     - raphael.command
-     */
     @Deprecated("", ReplaceWith("groupHas(group, permission)"))
     override fun groupHas(world: String, group: String, permission: String): Boolean {
         return groupHasPermission(group, permission)
@@ -56,53 +63,42 @@ class RaphaelHook : Permission() {
         return groupRemovePermission(group, permission)
     }
 
-    /**
-     * Groups:
-     * - name: default
-     *   expired: 2020-2-1 13:34:04
-     *
-     * Permissions:
-     * - name: raphael.command
-     *   expired: 2020-2-1 13:34:04
-     *
-     * Variables:
-     * - name: prefix
-     *   data: test
-     *   expired: 2020-2-1 13:34:04
-     */
+    @Deprecated("")
     override fun playerHas(world: String, player: String, permission: String): Boolean {
-        val p = Bukkit.getPlayerExact(player) ?: return false
-        return p.hasPermission(permission)
+        return (Bukkit.getPlayerExact(player) ?: return false).hasPermission(permission)
     }
 
+    @Deprecated("")
     override fun playerAdd(world: String, player: String, permission: String): Boolean {
-        val playerExact = Bukkit.getPlayerExact(player) ?: return false
-        return this.playerAdd(playerExact, permission, 0, "")
+        return playerAdd(Bukkit.getPlayerExact(player) ?: return false, permission, 0, "")
     }
 
+    @Deprecated("")
     override fun playerRemove(world: String, player: String, permission: String): Boolean {
-        val playerExact = Bukkit.getPlayerExact(player) ?: return false
-        return this.playerRemove(playerExact, permission, "")
+        return playerRemove(Bukkit.getPlayerExact(player) ?: return false, permission, "")
     }
 
+    @Deprecated("")
     override fun playerAddGroup(world: String, player: String, group: String): Boolean {
-        val playerExact = Bukkit.getPlayerExact(player) ?: return false
-        return this.playerAddGroup(playerExact, group, 0, "")
+        return playerAddGroup(Bukkit.getPlayerExact(player) ?: return false, group, 0, "")
     }
 
+    @Deprecated("")
     override fun playerRemoveGroup(world: String, player: String, group: String): Boolean {
-        val playerExact = Bukkit.getPlayerExact(player) ?: return false
-        return this.playerRemoveGroup(playerExact, group, "")
+        return playerRemoveGroup(Bukkit.getPlayerExact(player) ?: return false, group, "")
     }
 
+    @Deprecated("")
     override fun getPrimaryGroup(world: String, player: String): String {
-        return playerGroups(Bukkit.getPlayerExact(player) ?: return "null").value.firstOrNull()?.name ?: "null"
+        return playerGroups(Bukkit.getPlayerExact(player) ?: return "null").validGroups.firstOrNull()?.name ?: "null"
     }
 
+    @Deprecated("")
     override fun getPlayerGroups(world: String, player: String): Array<String> {
-        return playerGroups(Bukkit.getPlayerExact(player) ?: return emptyArray()).value.filterNot { it.isExpired() }.map { it.name }.toTypedArray()
+        return playerGroups(Bukkit.getPlayerExact(player) ?: return emptyArray()).validGroups.map { it.name }.toTypedArray()
     }
 
+    @Deprecated("", ReplaceWith("getPlayerGroups(world, player).contains(group)"))
     override fun playerInGroup(world: String, player: String, group: String): Boolean {
         return getPlayerGroups(world, player).contains(group)
     }
@@ -110,64 +106,61 @@ class RaphaelHook : Permission() {
     /**
      * 获取玩家权限
      */
-    fun playerPermissions(player: Player): ExpiredList {
-        val data = RaphaelAPI.database.getData(player)
-        return ExpiredList(data.getList("Permissions") ?: ArrayList<Any>()).removeExpired()
-    }
-
-    /**
-     * 获取玩家权限组
-     */
-    fun playerGroups(player: Player): ExpiredList {
-        val data = RaphaelAPI.database.getData(player)
-        return ExpiredList(data.getList("Groups") ?: ArrayList<Any>()).removeExpired()
+    fun playerPermissions(player: Player): SerializedPermissions {
+        return permissionsMap.computeIfAbsent(player.name) {
+            Database.INSTANCE.getPermissions(player)
+        }
     }
 
     /**
      * 获取玩家变量
      */
-    fun playerVariables(player: Player): ExpiredList {
-        val data = RaphaelAPI.database.getData(player)
-        return ExpiredList(data.getList("Variables") ?: ArrayList<Any>()).removeExpired()
+    fun playerVariables(player: Player): SerializedVariables {
+        return variablesMap.computeIfAbsent(player.name) {
+            Database.INSTANCE.getVariables(player)
+        }
+    }
+
+    /**
+     * 获取玩家权限组
+     */
+    fun playerGroups(player: Player): SerializedGroups {
+        return groupsMap.computeIfAbsent(player.name) {
+            Database.INSTANCE.getGroups(player)
+        }
     }
 
     /**
      * 玩家是否含有变量（检测键）
      */
     fun playerHasVariableKey(player: Player, variable: String): Boolean {
-        return playerVariables(player).value.any { it.name == variable }
+        return playerVariables(player).validVariables.any { it.name == variable }
     }
 
     /**
      * 玩家是否含有变量（检测值）
      */
     fun playerHasVariableValue(player: Player, value: String): Boolean {
-        return playerVariables(player).value.any { it.data == value }
+        return playerVariables(player).validVariables.any { it.data == value }
     }
 
     /**
      * 玩家赋予变量
      */
     fun playerAddVariable(player: Player, variable: String, value: String, time: Long = 0L, reason: String = ""): Boolean {
-        val data = RaphaelAPI.database.getData(player)
         val event = RaphaelPlayerEvent(player, EventType.VARIABLE, EventAction.ADD, variable, value, time, reason)
         if (event.call().isCancelled) {
             return false
         }
-        data.set("Variables", playerVariables(player).run {
-            val first = this.value.firstOrNull { it.name == event.asVariableKey() }
-            if (first != null) {
-                first.expired += event.time
-            } else {
-                this.value.add(ExpiredValue(event.asVariableKey(), event.asVariableValue().toString()).run {
-                    if (event.time > 0) {
-                        this.expired = System.currentTimeMillis() + event.time
-                    }
-                    this
-                })
-            }
-            this.translate()
-        })
+        // 更新数据库
+        Database.INSTANCE.setVariable(player, SerializedVariables.Variable(value, value, time), true)
+        // 更新本地缓存
+        variablesMap[player.name] = playerVariables(player).run {
+            copy(variables = validVariables.toMutableList().also { list ->
+                list.removeIf { v -> v.name == variable }
+                list.add(SerializedVariables.Variable(value, value, time))
+            })
+        }
         return true
     }
 
@@ -175,15 +168,17 @@ class RaphaelHook : Permission() {
      * 玩家移除变量
      */
     fun playerRemoveVariable(player: Player, variable: String, reason: String = ""): Boolean {
-        val data = RaphaelAPI.database.getData(player)
         val event = RaphaelPlayerEvent(player, EventType.VARIABLE, EventAction.REMOVE, variable, null, 0, reason)
         if (event.call().isCancelled) {
             return false
         }
-        data.set("Variables", playerVariables(player).run {
-            this.value.removeIf { it.name == event.asVariableKey() }
-            this.translate()
-        })
+        Database.INSTANCE.setVariable(player, SerializedVariables.Variable(variable), false)
+        // 更新本地缓存
+        variablesMap[player.name] = playerVariables(player).run {
+            copy(variables = validVariables.toMutableList().also { list ->
+                list.removeIf { v -> v.name == variable }
+            })
+        }
         return true
     }
 
@@ -191,25 +186,18 @@ class RaphaelHook : Permission() {
      * 玩家赋予权限组
      */
     fun playerAddGroup(player: Player, group: String, time: Long = 0, reason: String = ""): Boolean {
-        val data = RaphaelAPI.database.getData(player)
         val event = RaphaelPlayerEvent(player, EventType.GROUP, EventAction.ADD, group, null, time, reason)
         if (event.call().isCancelled) {
             return false
         }
-        data.set("Groups", playerGroups(player).run {
-            val first = this.value.firstOrNull { it.name == event.asGroup() }
-            if (first != null) {
-                first.expired += event.time
-            } else {
-                this.value.add(ExpiredValue(event.asGroup()).run {
-                    if (event.time > 0) {
-                        this.expired = System.currentTimeMillis() + event.time
-                    }
-                    this
-                })
-            }
-            this.translate()
-        })
+        Database.INSTANCE.setGroup(player, SerializedGroups.Group(group, time), true)
+        // 更新本地缓存
+        groupsMap[player.name] = playerGroups(player).run {
+            copy(groups = validGroups.toMutableList().also { list ->
+                list.removeIf { v -> v.name == group }
+                list.add(SerializedGroups.Group(group, time))
+            })
+        }
         return true
     }
 
@@ -217,15 +205,17 @@ class RaphaelHook : Permission() {
      * 玩家撤销权限组
      */
     fun playerRemoveGroup(player: Player, group: String, reason: String = ""): Boolean {
-        val data = RaphaelAPI.database.getData(player)
         val event = RaphaelPlayerEvent(player, EventType.GROUP, EventAction.REMOVE, group, null, 0, reason)
         if (event.call().isCancelled) {
             return false
         }
-        data.set("Groups", playerGroups(player).run {
-            this.value.removeIf { it.name == event.asGroup() }
-            this.translate()
-        })
+        Database.INSTANCE.setGroup(player, SerializedGroups.Group(group), false)
+        // 更新本地缓存
+        groupsMap[player.name] = playerGroups(player).run {
+            copy(groups = validGroups.toMutableList().also { list ->
+                list.removeIf { v -> v.name == group }
+            })
+        }
         return true
     }
 
@@ -233,25 +223,18 @@ class RaphaelHook : Permission() {
      * 玩家赋予权限
      */
     fun playerAdd(player: Player, permission: String, time: Long = 0L, reason: String = ""): Boolean {
-        val data = RaphaelAPI.database.getData(player)
         val event = RaphaelPlayerEvent(player, EventType.PERMISSION, EventAction.ADD, permission, null, time, reason)
         if (event.call().isCancelled) {
             return false
         }
-        data.set("Permissions", playerPermissions(player).run {
-            val first = this.value.firstOrNull { it.name == event.asPermission() }
-            if (first != null) {
-                first.expired += event.time
-            } else {
-                this.value.add(ExpiredValue(event.asPermission()).run {
-                    if (event.time > 0) {
-                        this.expired = System.currentTimeMillis() + event.time
-                    }
-                    this
-                })
-            }
-            this.translate()
-        })
+        Database.INSTANCE.setPermission(player, SerializedPermissions.Permission(permission, time), true)
+        // 更新本地缓存
+        permissionsMap[player.name] = playerPermissions(player).run {
+            copy(permissions = validPermissions.toMutableList().also { list ->
+                list.removeIf { v -> v.name == permission }
+                list.add(SerializedPermissions.Permission(permission, time))
+            })
+        }
         return true
     }
 
@@ -259,15 +242,17 @@ class RaphaelHook : Permission() {
      * 玩家移除权限
      */
     fun playerRemove(player: Player, permission: String, reason: String = ""): Boolean {
-        val data = RaphaelAPI.database.getData(player)
         val event = RaphaelPlayerEvent(player, EventType.PERMISSION, EventAction.REMOVE, permission, null, 0, reason)
         if (event.call().isCancelled) {
             return false
         }
-        data.set("Permissions", playerPermissions(player).run {
-            this.value.removeIf { it.name == event.asPermission() }
-            this.translate()
-        })
+        Database.INSTANCE.setPermission(player, SerializedPermissions.Permission(permission), false)
+        // 更新本地缓存
+        permissionsMap[player.name] = playerPermissions(player).run {
+            copy(permissions = validPermissions.toMutableList().also { list ->
+                list.removeIf { v -> v.name == permission }
+            })
+        }
         return true
     }
 
