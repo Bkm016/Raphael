@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
  * @author sky
  * @since 2021/3/23 3:04 下午
  */
-class DatabaseMongoDB : Database {
+class DatabaseMongoDB : Database() {
 
     val bridge = CronusBridge.get(
         Raphael.conf.getString("Database.source.MongoDB.client"),

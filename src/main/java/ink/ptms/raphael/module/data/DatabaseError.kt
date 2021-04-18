@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
  * @author sky
  * @since 2021/3/5 3:51 下午
  */
-class DatabaseError(val cause: Throwable) : Database {
+class DatabaseError(val cause: Throwable) : Database() {
 
     init {
         cause.printStackTrace()

@@ -18,7 +18,7 @@ import javax.sql.DataSource
  * @author sky
  * @since 2021/3/5 3:51 下午
  */
-class DatabaseSQL : Database {
+class DatabaseSQL : Database() {
 
     val host = SQLHost(Raphael.conf.getConfigurationSection("Database.source.SQL"), Raphael.plugin, true)
 

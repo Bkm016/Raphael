@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
  * @author sky
  * @since 2021/3/23 3:04 下午
  */
-class DatabaseLocal : Database {
+class DatabaseLocal : Database() {
 
     override fun getPermissions(player: Player): SerializedPermissions {
         val mapList = LocalPlayer.get(player).getMapList("Raphael.permissions")

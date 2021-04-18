@@ -14,19 +14,19 @@ import org.bukkit.event.player.PlayerLoginEvent
  * @author sky
  * @since 2021/3/3 4:39 下午
  */
-interface Database {
+abstract class Database {
 
-    fun getPermissions(player: Player): SerializedPermissions
+    abstract fun getPermissions(player: Player): SerializedPermissions
 
-    fun getVariables(player: Player): SerializedVariables
+    abstract fun getVariables(player: Player): SerializedVariables
 
-    fun getGroups(player: Player): SerializedGroups
+    abstract fun getGroups(player: Player): SerializedGroups
 
-    fun setPermission(player: Player, permission: SerializedPermissions.Permission, value: Boolean)
+    abstract fun setPermission(player: Player, permission: SerializedPermissions.Permission, value: Boolean)
 
-    fun setVariable(player: Player, variable: SerializedVariables.Variable, value: Boolean)
+    abstract fun setVariable(player: Player, variable: SerializedVariables.Variable, value: Boolean)
 
-    fun setGroup(player: Player, group: SerializedGroups.Group, value: Boolean)
+    abstract fun setGroup(player: Player, group: SerializedGroups.Group, value: Boolean)
 
     @TListener
     companion object : Listener {
