@@ -1,7 +1,7 @@
 package ink.ptms.raphael.module.permission
 
-import io.izzel.taboolib.kotlin.Reflex.Companion.reflex
 import org.bukkit.permissions.PermissionAttachment
+import taboolib.common.reflect.Reflex.Companion.getProperty
 
 /**
  * @Author sky
@@ -10,5 +10,5 @@ import org.bukkit.permissions.PermissionAttachment
 @Suppress("UNCHECKED_CAST")
 class PermissibleData(val permissionAttachment: PermissionAttachment) {
 
-    var permissions = permissionAttachment.reflex<MutableMap<String, Boolean>>("permissions")!!
+    var permissions = permissionAttachment.getProperty<MutableMap<String, Boolean>>("permissions")!!
 }

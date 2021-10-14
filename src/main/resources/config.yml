@@ -1,6 +1,6 @@
 
 
-#         Powered by TabooLib 5.0         #
+#         Powered by TabooLib 6.0         #
 
 
 Logs:
@@ -9,6 +9,7 @@ Logs:
     - org.bukkit.command.Command
 
 Database:
+  # LOCAL、SQL、MONGODB
   use: SQL
   source:
     SQL:

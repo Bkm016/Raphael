@@ -8,12 +8,12 @@ import ink.ptms.raphael.module.data.Database
 import ink.ptms.raphael.module.data.SerializedGroups
 import ink.ptms.raphael.module.data.SerializedPermissions
 import ink.ptms.raphael.module.data.SerializedVariables
-import io.izzel.taboolib.module.db.local.Local
-import io.izzel.taboolib.module.inject.PlayerContainer
 import net.milkbowl.vault.permission.Permission
 import org.bukkit.Bukkit
-import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerQuitEvent
+import taboolib.common.platform.event.SubscribeEvent
+import taboolib.module.configuration.createLocal
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -24,17 +24,21 @@ class RaphaelHook : Permission() {
 
     companion object {
 
-        @PlayerContainer
         private val permissionsMap = ConcurrentHashMap<String, SerializedPermissions>()
 
-        @PlayerContainer
         private val variablesMap = ConcurrentHashMap<String, SerializedVariables>()
 
-        @PlayerContainer
         private val groupsMap = ConcurrentHashMap<String, SerializedGroups>()
+
+        @SubscribeEvent
+        fun e(e: PlayerQuitEvent) {
+            permissionsMap.remove(e.player.name)
+            variablesMap.remove(e.player.name)
+            groupsMap.remove(e.player.name)
+        }
     }
 
-    fun data(): FileConfiguration = Local.get().get("data.yml")
+    fun data() = createLocal("data.yml")
 
     override fun getName(): String = "Raphael"
 
@@ -149,7 +153,7 @@ class RaphaelHook : Permission() {
      */
     fun playerAddVariable(player: Player, variable: String, value: String, time: Long = 0L, reason: String = ""): Boolean {
         val event = RaphaelPlayerEvent(player, EventType.VARIABLE, EventAction.ADD, variable, value, time, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         // 更新数据库
@@ -169,7 +173,7 @@ class RaphaelHook : Permission() {
      */
     fun playerRemoveVariable(player: Player, variable: String, reason: String = ""): Boolean {
         val event = RaphaelPlayerEvent(player, EventType.VARIABLE, EventAction.REMOVE, variable, null, 0, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         Database.INSTANCE.setVariable(player, SerializedVariables.Variable(variable), false)
@@ -187,7 +191,7 @@ class RaphaelHook : Permission() {
      */
     fun playerAddGroup(player: Player, group: String, time: Long = 0, reason: String = ""): Boolean {
         val event = RaphaelPlayerEvent(player, EventType.GROUP, EventAction.ADD, group, null, time, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         Database.INSTANCE.setGroup(player, SerializedGroups.Group(group, time), true)
@@ -206,7 +210,7 @@ class RaphaelHook : Permission() {
      */
     fun playerRemoveGroup(player: Player, group: String, reason: String = ""): Boolean {
         val event = RaphaelPlayerEvent(player, EventType.GROUP, EventAction.REMOVE, group, null, 0, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         Database.INSTANCE.setGroup(player, SerializedGroups.Group(group), false)
@@ -224,7 +228,7 @@ class RaphaelHook : Permission() {
      */
     fun playerAdd(player: Player, permission: String, time: Long = 0L, reason: String = ""): Boolean {
         val event = RaphaelPlayerEvent(player, EventType.PERMISSION, EventAction.ADD, permission, null, time, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         Database.INSTANCE.setPermission(player, SerializedPermissions.Permission(permission, time), true)
@@ -243,7 +247,7 @@ class RaphaelHook : Permission() {
      */
     fun playerRemove(player: Player, permission: String, reason: String = ""): Boolean {
         val event = RaphaelPlayerEvent(player, EventType.PERMISSION, EventAction.REMOVE, permission, null, 0, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         Database.INSTANCE.setPermission(player, SerializedPermissions.Permission(permission), false)
@@ -275,7 +279,7 @@ class RaphaelHook : Permission() {
      */
     fun groupAddPermission(group: String, permission: String, reason: String = ""): Boolean {
         val event = RaphaelGroupEvent(group, EventType.PERMISSION, EventAction.ADD, permission, null, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         data().set("Groups.${event.group}.Permissions", data().getStringList("Groups.${event.group}.Permissions").toMutableSet().run {
@@ -290,7 +294,7 @@ class RaphaelHook : Permission() {
      */
     fun groupRemovePermission(group: String, permission: String, reason: String = ""): Boolean {
         val event = RaphaelGroupEvent(group, EventType.PERMISSION, EventAction.REMOVE, permission, null, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         data().set("Groups.${event.group}.Permissions", data().getStringList("Groups.${event.group}.Permissions").toMutableSet().run {
@@ -326,7 +330,7 @@ class RaphaelHook : Permission() {
      */
     fun groupAddVariable(group: String, variable: String, value: String, reason: String = ""): Boolean {
         val event = RaphaelGroupEvent(group, EventType.VARIABLE, EventAction.ADD, variable, value, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         data().set("Groups.${event.group}.Variable.${event.asVariableKey()}", event.asVariableValue())
@@ -338,7 +342,7 @@ class RaphaelHook : Permission() {
      */
     fun groupRemoveVariable(group: String, variable: String, reason: String = ""): Boolean {
         val event = RaphaelGroupEvent(group, EventType.VARIABLE, EventAction.REMOVE, variable, null, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         data().set("Groups.${event.group}.Variable.${event.asVariableKey()}", null)
@@ -350,7 +354,7 @@ class RaphaelHook : Permission() {
      */
     fun groupCreate(group: String, reason: String = ""): Boolean {
         val event = RaphaelGroupEvent(group, EventType.GROUP, EventAction.CREATE, group, null, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         data().createSection("Groups.$group")
@@ -362,7 +366,7 @@ class RaphaelHook : Permission() {
      */
     fun groupDelete(group: String, reason: String = ""): Boolean {
         val event = RaphaelGroupEvent(group, EventType.GROUP, EventAction.DELETE, group, null, reason)
-        if (event.call().isCancelled) {
+        if (!event.call()) {
             return false
         }
         data().set("Groups.$group", null)

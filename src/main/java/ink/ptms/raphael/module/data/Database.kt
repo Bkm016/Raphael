@@ -1,11 +1,9 @@
 package ink.ptms.raphael.module.data
 
-import io.izzel.taboolib.module.inject.TListener
-import io.izzel.taboolib.module.locale.TLocale
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerLoginEvent
+import taboolib.common.platform.event.SubscribeEvent
+import taboolib.module.chat.colored
 
 /**
  * Chemdah
@@ -28,24 +26,23 @@ abstract class Database {
 
     abstract fun setGroup(player: Player, group: SerializedGroups.Group, value: Boolean)
 
-    @TListener
-    companion object : Listener {
+    companion object {
 
         val INSTANCE = try {
             when (Type.INSTANCE) {
                 Type.SQL -> DatabaseSQL()
-                Type.LOCAL -> DatabaseLocal()
-                Type.MONGODB -> DatabaseMongoDB()
+                Type.LOCAL -> DatabaseSQL()
+                Type.MONGODB -> DatabaseSQL()
             }
         } catch (e: Throwable) {
             DatabaseError(e)
         }
 
-        @EventHandler
+        @SubscribeEvent
         fun e(e: PlayerLoginEvent) {
             if (INSTANCE is DatabaseError) {
                 e.result = PlayerLoginEvent.Result.KICK_OTHER
-                e.kickMessage = TLocale.Translate.setColored("&4&loERROR! &r&oThe &4&lRaphael&r&o database failed to initialize.")
+                e.kickMessage = "&4&loERROR! &r&oThe &4&lRaphael&r&o database failed to initialize.".colored()
             }
         }
     }

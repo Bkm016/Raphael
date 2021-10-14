@@ -1,11 +1,6 @@
 package ink.ptms.raphael.module.permission
 
-import ink.ptms.raphael.Raphael
 import ink.ptms.raphael.RaphaelAPI
-import ink.ptms.raphael.api.nms.NMS
-import io.izzel.taboolib.Version
-import io.izzel.taboolib.module.db.local.Local
-import io.izzel.taboolib.util.Ref
 import org.bukkit.Bukkit
 import org.bukkit.entity.HumanEntity
 import org.bukkit.permissions.PermissibleBase
@@ -13,6 +8,10 @@ import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionAttachment
 import org.bukkit.permissions.PermissionAttachmentInfo
 import org.bukkit.plugin.Plugin
+import taboolib.common.io.runningClasses
+import taboolib.common.reflect.Reflex.Companion.getProperty
+import taboolib.common.reflect.Reflex.Companion.setProperty
+import taboolib.module.configuration.createLocal
 import java.util.*
 
 /**
@@ -21,18 +20,18 @@ import java.util.*
  */
 class PermissibleRaphael : PermissibleBase(null) {
 
-    val data = Local.get().get("data.yml")!!
+    val data = createLocal("data.yml")
     var humanEntity: HumanEntity? = null
     var permissibleBase: PermissibleBase? = null
 
     fun init(humanEntity: HumanEntity) {
         this.humanEntity = humanEntity
-        this.permissibleBase = NMS.HANDLE.getPermissibleBase(humanEntity)
-        NMS.HANDLE.setPermissibleBase(humanEntity, this)
+        this.permissibleBase = humanEntity.getProperty("perm")
+        humanEntity.setProperty("perm", this)
     }
 
     fun cancel() {
-        NMS.HANDLE.setPermissibleBase(humanEntity ?: return, permissibleBase ?: return)
+        humanEntity?.setProperty("perm", permissibleBase)
     }
 
     override fun isPermissionSet(s: String): Boolean {
@@ -128,10 +127,9 @@ class PermissibleRaphael : PermissibleBase(null) {
     }
 
     fun getCaller(elements: Array<StackTraceElement>): String {
-        elements.filterNot { it.lineNumber == -1 || it.className.contains(Version.getCurrentVersion().name) }.forEach { element ->
+        elements.filterNot { it.lineNumber == -1 || it.className.startsWith("net.minecraft.server") }.forEach { element ->
             try {
-                val plugin = Ref.getCallerPlugin(Class.forName(element.className))
-                if (plugin != Raphael.plugin) {
+                if (Class.forName(element.className) !in runningClasses) {
                     return "${element.className}(${element.methodName}:${element.lineNumber})"
                 }
             } catch (t: Throwable) {

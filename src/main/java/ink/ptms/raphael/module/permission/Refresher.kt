@@ -1,12 +1,12 @@
 package ink.ptms.raphael.module.permission
 
 import ink.ptms.raphael.RaphaelAPI
-import io.izzel.taboolib.module.inject.TSchedule
 import org.bukkit.Bukkit
+import taboolib.common.platform.Schedule
 
 object Refresher {
 
-    @TSchedule(period = 20, async = true)
+    @Schedule(period = 20, async = true)
     fun e() {
         Bukkit.getOnlinePlayers().forEach { player ->
             var changed = false

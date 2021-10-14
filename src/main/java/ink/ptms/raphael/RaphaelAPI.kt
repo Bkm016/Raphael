@@ -2,12 +2,15 @@ package ink.ptms.raphael
 
 import com.google.gson.JsonObject
 import ink.ptms.raphael.module.permission.PermissibleData
-import io.izzel.taboolib.kotlin.Tasks
-import io.izzel.taboolib.module.inject.PlayerContainer
-import io.izzel.taboolib.util.Files
 import net.milkbowl.vault.permission.Permission
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerQuitEvent
+import taboolib.common.io.newFile
+import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.getDataFolder
+import taboolib.common.platform.function.submit
+import taboolib.platform.BukkitPlugin
 import java.text.SimpleDateFormat
 import java.util.concurrent.ConcurrentHashMap
 
@@ -16,8 +19,8 @@ object RaphaelAPI {
     private val format = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
     private val formatDay = SimpleDateFormat("yyyy-MM-dd")
 
-    @PlayerContainer
     val attachment = ConcurrentHashMap<String, PermissibleData>()
+
     val permission by lazy {
         getService()!!
     }
@@ -39,7 +42,7 @@ object RaphaelAPI {
     }
 
     fun updatePermission(player: Player) {
-        val data = attachment.computeIfAbsent(player.name) { PermissibleData(player.addAttachment(Raphael.plugin)) }
+        val data = attachment.computeIfAbsent(player.name) { PermissibleData(player.addAttachment(BukkitPlugin.getInstance())) }
         val map = getPermissions(player).map { permission ->
             Pair(if (permission[0] == '-') permission.substring(1) else permission, !permission.startsWith("-"))
         }
@@ -75,16 +78,19 @@ object RaphaelAPI {
 
     fun writeLogs(container: JsonObject.() -> Unit) {
         if (Raphael.conf.getBoolean("Logs.enable")) {
-            Tasks.task(true) {
+            submit(async = true) {
                 val json = JsonObject().also(container)
                 val jsonCaller = json.get("caller")?.asString
                 if (jsonCaller != "unknown" && Raphael.conf.getStringList("Logs.ignore").none { jsonCaller?.startsWith(it) == true }) {
-                    Files.writeAppend(Files.file(Raphael.plugin.dataFolder, "logs/${formatDay.format(System.currentTimeMillis())}.txt")) { r ->
-                        r.write(System.currentTimeMillis().toString() + "\t" + format.format(System.currentTimeMillis()) + "\t" + json.toString())
-                        r.newLine()
-                    }
+                    val text = System.currentTimeMillis().toString() + "\t" + format.format(System.currentTimeMillis()) + "\t" + json.toString() + "\n"
+                    newFile(getDataFolder(), "logs/${formatDay.format(System.currentTimeMillis())}.txt").appendText(text)
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    internal fun e(e: PlayerQuitEvent) {
+        attachment.remove(e.player.name)
     }
 }

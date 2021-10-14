@@ -5,29 +5,28 @@ import ink.ptms.raphael.RaphaelAPI
 import ink.ptms.raphael.api.EventType
 import ink.ptms.raphael.api.RaphaelGroupEvent
 import ink.ptms.raphael.api.RaphaelPlayerEvent
-import io.izzel.taboolib.kotlin.Tasks
-import io.izzel.taboolib.module.inject.TListener
-import io.izzel.taboolib.util.Ref
 import org.bukkit.Bukkit
-import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
-import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import taboolib.common.LifeCycle
+import taboolib.common.platform.Awake
+import taboolib.common.platform.event.EventPriority
+import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.submit
+import taboolib.common.reflect.Reflex.Companion.unsafeInstance
 
 /**
  * @Author sky
  * @Since 2020-02-01 17:40
  */
-@TListener(register = "init", cancel = "cancel")
-private class Events : Listener {
+internal object Events {
 
     val perm = Maps.newConcurrentMap<String, PermissibleRaphael>()!!
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @SubscribeEvent(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun e(e: RaphaelPlayerEvent) {
         if (e.eventType != EventType.VARIABLE) {
-            Tasks.task {
+            submit {
                 RaphaelAPI.updatePermission()
             }
         }
@@ -43,10 +42,10 @@ private class Events : Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @SubscribeEvent(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun e(e: RaphaelGroupEvent) {
         if (e.eventType == EventType.PERMISSION) {
-            Tasks.task {
+            submit {
                 if (e.group == "default") {
                     Bukkit.getOnlinePlayers().forEach {
                         RaphaelAPI.updatePermission(it)
@@ -69,10 +68,10 @@ private class Events : Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     fun e(e: PlayerJoinEvent) {
         try {
-            perm[e.player.name] = (Ref.getUnsafe().allocateInstance(PermissibleRaphael::class.java) as PermissibleRaphael).run {
+            perm[e.player.name] = (PermissibleRaphael::class.java.unsafeInstance() as PermissibleRaphael).run {
                 init(e.player)
                 this
             }
@@ -83,7 +82,7 @@ private class Events : Listener {
         RaphaelAPI.updatePermission(e.player)
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @SubscribeEvent(priority = EventPriority.MONITOR)
     fun e(e: PlayerQuitEvent) {
         RaphaelAPI.cancelPermission(e.player)
         try {
@@ -93,10 +92,11 @@ private class Events : Listener {
         }
     }
 
+    @Awake(LifeCycle.ENABLE)
     fun init() {
         Bukkit.getOnlinePlayers().forEach { player ->
             try {
-                perm[player.name] = (Ref.getUnsafe().allocateInstance(PermissibleRaphael::class.java) as PermissibleRaphael).run {
+                perm[player.name] = (PermissibleRaphael::class.java.unsafeInstance() as PermissibleRaphael).run {
                     init(player)
                     this
                 }
@@ -108,6 +108,7 @@ private class Events : Listener {
         RaphaelAPI.updatePermission()
     }
 
+    @Awake(LifeCycle.DISABLE)
     fun cancel() {
         Bukkit.getOnlinePlayers().forEach { player ->
             try {

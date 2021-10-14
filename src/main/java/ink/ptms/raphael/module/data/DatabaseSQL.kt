@@ -6,10 +6,13 @@ import io.izzel.taboolib.module.db.sql.*
 import io.izzel.taboolib.module.db.sql.query.Where
 import io.izzel.taboolib.module.inject.PlayerContainer
 import org.bukkit.entity.Player
+import taboolib.module.database.ColumnOptionSQL
+import taboolib.module.database.ColumnTypeSQL
+import taboolib.module.database.Table
+import taboolib.module.database.getHost
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
-import javax.sql.DataSource
 
 /**
  * Chemdah
@@ -20,69 +23,109 @@ import javax.sql.DataSource
  */
 class DatabaseSQL : Database() {
 
-    val host = SQLHost(Raphael.conf.getConfigurationSection("Database.source.SQL"), Raphael.plugin, true)
+    val host = Raphael.conf.getHost("Database.source.SQL")
 
     val name: String
         get() = Raphael.conf.getString("Database.source.SQL.table", "raphael")!!
 
-    val tableUser = SQLTable(
-        "${name}_user",
-        SQLColumn.PRIMARY_KEY_ID,
-        SQLColumnType.VARCHAR.toColumn(36, "name").columnOptions(SQLColumnOption.UNIQUE_KEY),
-        SQLColumnType.VARCHAR.toColumn(36, "uuid").columnOptions(SQLColumnOption.UNIQUE_KEY),
-        SQLColumnType.DATE.toColumn("time")
-    )
-
-    val tablePermission = SQLTable(
-        "${name}_permission",
-        SQLColumn.PRIMARY_KEY_ID,
-        SQLColumnType.INT.toColumn(16, "user").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.VARCHAR.toColumn(64, "permission").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.BOOL.toColumn("value"),
-        SQLColumnType.DATE.toColumn("expired")
-    )
-
-    val tableGroup = SQLTable(
-        "${name}_group",
-        SQLColumn.PRIMARY_KEY_ID,
-        SQLColumnType.INT.toColumn(16, "user").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.VARCHAR.toColumn(64, "group").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.BOOL.toColumn("value"),
-        SQLColumnType.DATE.toColumn("expired")
-    )
-
-    val tableVariable = SQLTable(
-        "${name}_variable",
-        SQLColumn.PRIMARY_KEY_ID,
-        SQLColumnType.INT.toColumn(16, "user").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.VARCHAR.toColumn(64, "variable").columnOptions(SQLColumnOption.KEY),
-        SQLColumnType.VARCHAR.toColumn(64, "data"),
-        SQLColumnType.BOOL.toColumn("value"),
-        SQLColumnType.VARCHAR.toColumn("expired")
-    )
-
-    val dataSource: DataSource by lazy {
-        host.createDataSource()
+    val tableUser = Table("${name}_user", host) {
+        add { id() }
+        add("name") {
+            type(ColumnTypeSQL.VARCHAR, 36) {
+                options(ColumnOptionSQL.UNIQUE_KEY)
+            }
+        }
+        add("uuid") {
+            type(ColumnTypeSQL.VARCHAR, 36) {
+                options(ColumnOptionSQL.UNIQUE_KEY)
+            }
+        }
+        add("time") {
+            type(ColumnTypeSQL.DATE)
+        }
     }
 
+    val tablePermission = Table("${name}_permission", host) {
+        add { id() }
+        add("user") {
+            type(ColumnTypeSQL.INT, 16) {
+                options(ColumnOptionSQL.KEY)
+            }
+        }
+        add("permission") {
+            type(ColumnTypeSQL.VARCHAR, 128) {
+                options(ColumnOptionSQL.KEY)
+            }
+        }
+        add("value") {
+            type(ColumnTypeSQL.BOOL)
+        }
+        add("expired") {
+            type(ColumnTypeSQL.DATE)
+        }
+    }
+
+    val tableGroup = Table("${name}_group", host) {
+        add { id() }
+        add("user") {
+            type(ColumnTypeSQL.INT, 16) {
+                options(ColumnOptionSQL.KEY)
+            }
+        }
+        add("group") {
+            type(ColumnTypeSQL.VARCHAR, 128) {
+                options(ColumnOptionSQL.KEY)
+            }
+        }
+        add("value") {
+            type(ColumnTypeSQL.BOOL)
+        }
+        add("expired") {
+            type(ColumnTypeSQL.DATE)
+        }
+    }
+
+    val tableVariable = Table("${name}_variable", host) {
+        add { id() }
+        add("user") {
+            type(ColumnTypeSQL.INT, 16) {
+                options(ColumnOptionSQL.KEY)
+            }
+        }
+        add("variable") {
+            type(ColumnTypeSQL.VARCHAR, 128) {
+                options(ColumnOptionSQL.KEY)
+            }
+        }
+        add("data") {
+            type(ColumnTypeSQL.VARCHAR, 128)
+        }
+        add("value") {
+            type(ColumnTypeSQL.BOOL)
+        }
+        add("expired") {
+            type(ColumnTypeSQL.DATE)
+        }
+    }
+
+    val dataSource = host.createDataSource()
+
     init {
-        tableUser.create(dataSource)
-        tablePermission.create(dataSource)
-        tableGroup.create(dataSource)
-        tableVariable.create(dataSource)
+        tableUser.createTable(dataSource)
+        tablePermission.createTable(dataSource)
+        tableGroup.createTable(dataSource)
+        tableVariable.createTable(dataSource)
     }
 
     fun getUserId(player: Player): Long {
         if (cacheUserId.containsKey(player.name)) {
             return cacheUserId[player.name]!!
         }
-        val userId = tableUser.select(Where.equals("uuid", player.uniqueId.toString()))
-            .limit(1)
-            .row("id")
-            .to(dataSource)
-            .first {
-                it.getLong("id")
-            } ?: return -1L
+        val userId = tableUser.select(dataSource) {
+            where("uuid" eq player.uniqueId.toString())
+            limit(1)
+            rows("id")
+        }.firstOrNull { getLong("id") } ?: return -1L
         cacheUserId[player.name] = userId
         return userId
     }

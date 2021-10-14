@@ -1,26 +1,17 @@
 package ink.ptms.raphael.api
 
-import io.izzel.taboolib.module.event.EventCancellable
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import taboolib.platform.type.BukkitProxyEvent
 
-/**
- * @Author sky
- * @Since 2020-02-01 17:51
- */
 class RaphaelPlayerEvent(
-        val player: Player,
-        val eventType: EventType,
-        val eventAction: EventAction,
-        private var name: String,
-        private var data: String?,
-        var time: Long = 0,
-        var reason: String = ""
-) : EventCancellable<RaphaelPlayerEvent>() {
-
-    init {
-        async(!Bukkit.isPrimaryThread())
-    }
+    val player: Player,
+    val eventType: EventType,
+    val eventAction: EventAction,
+    private var name: String,
+    private var data: String?,
+    var time: Long = 0,
+    var reason: String = "",
+) : BukkitProxyEvent() {
 
     fun asGroup(): String {
         return name
