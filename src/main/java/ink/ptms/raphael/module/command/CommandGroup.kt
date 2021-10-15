@@ -15,18 +15,27 @@ object CommandGroup : CommandHandle() {
     fun init() {
         // RaphaelGroupAdd [Group]
         command("RaphaelGroupAdd", aliases = listOf("rgadd", "mangadd"), permission = "raphael.command") {
+            fun invoke(sender: CommandSender, group: String, reason: String) {
+                if (RaphaelAPI.permission.groups.contains(group)) {
+                    notify(sender, "Group \"&f$group&7\" Exists.")
+                    return
+                }
+                if (RaphaelAPI.permission.groupCreate(group, reason)) {
+                    notify(sender, "Group \"&f$group&7\" Created. &8(reason: $reason)")
+                } else {
+                    notify(sender, "Failed.")
+                }
+            }
             // group
-            dynamic(optional = true) {
+            dynamic {
+                // <reason>
+                dynamic(optional = true) {
+                    execute<CommandSender> { sender, context, reason ->
+                        invoke(sender, context.argument(-1)!!, reason)
+                    }
+                }
                 execute<CommandSender> { sender, context, group ->
-                    if (RaphaelAPI.permission.groups.contains(group)) {
-                        notify(sender, "Group \"&f$group&7\" Exists.")
-                        return@execute
-                    }
-                    if (RaphaelAPI.permission.groupCreate(group, "command by ${sender.name}")) {
-                        notify(sender, "Group \"&f$group&7\" Created. &8(reason: command by ${sender.name})")
-                    } else {
-                        notify(sender, "Failed.")
-                    }
+                    invoke(sender, group, "command by ${sender.name}")
                 }
             }
         }
