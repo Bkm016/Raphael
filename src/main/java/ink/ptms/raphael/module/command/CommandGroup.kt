@@ -302,8 +302,8 @@ object CommandGroup : CommandHandle() {
                     return
                 }
                 notify(sender, "Information:")
-                adaptPlayer(sender).performCommand("rglistp ${group}")
-                adaptPlayer(sender).performCommand("rglistv ${group}")
+                adaptCommandSender(sender).performCommand("rglistp ${group}")
+                adaptCommandSender(sender).performCommand("rglistv ${group}")
             }
             // group
             dynamic {

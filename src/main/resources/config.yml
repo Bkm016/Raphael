@@ -9,7 +9,7 @@ Logs:
     - org.bukkit.command.Command
 
 Database:
-  # LOCAL、SQL、MONGODB
+  # LOCAL、SQL
   use: SQL
   source:
     SQL:
@@ -19,7 +19,3 @@ Database:
       password: root
       database: test
       table: raphael
-    MongoDB:
-      client: localhost
-      database: test
-      collection: raphael

@@ -7,6 +7,8 @@ import org.bukkit.command.CommandSender
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.command.command
+import taboolib.common.platform.function.adaptCommandSender
+import taboolib.common5.util.parseMillis
 import taboolib.module.chat.TellrawJson
 
 object CommandUser : CommandHandle() {
@@ -15,8 +17,8 @@ object CommandUser : CommandHandle() {
     fun init() {
         // RaphaelUserAddGroup [player] [group] <time> <reason>
         command(name = "RaphaelUserAddGroup", aliases = listOf("ruadd", "ruaddg", "manuadd", "manuaddg"), permission = "raphael.command") {
-            fun invoke(sender: CommandSender, player: String, group: String, time: String = "0", reason: String = "command by ${sender.name}") {
-                val player = Bukkit.getPlayerExact(player)
+            fun invoke(sender: CommandSender, playerName: String, group: String, time: String = "0", reason: String = "command by ${sender.name}") {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
@@ -25,7 +27,7 @@ object CommandUser : CommandHandle() {
                     notify(sender, "Group \"&f${group}&7\" Not Found.")
                     return
                 }
-                if (RaphaelAPI.permission.playerAddGroup(player!!, group, CronusUtils.toMillis(time), reason)) {
+                if (RaphaelAPI.permission.playerAddGroup(player, group, time.parseMillis(), reason)) {
                     notify(sender, "Add \"&f${group}&7\" to \"&f${player.name}&7\"'s Groups. &8(time: ${time}, reason: ${reason})")
                 } else {
                     notify(sender, "Failed.")
@@ -55,8 +57,8 @@ object CommandUser : CommandHandle() {
         }
         // RaphaelUserDelGroup [player] [group] <reason>
         command(name = "RaphaelUserDelGroup", aliases = listOf("rudel", "rudelg", "manudel", "manudelg"), permission = "raphael.command") {
-            fun invoke(sender: CommandSender, player: String, group: String, reason: String = "command by ${sender.name}") {
-                val player = Bukkit.getPlayerExact(player)
+            fun invoke(sender: CommandSender, playerName: String, group: String, reason: String = "command by ${sender.name}") {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
@@ -65,7 +67,7 @@ object CommandUser : CommandHandle() {
                     notify(sender, "Group \"&f${group}&7\" Not Found.")
                     return
                 }
-                if (RaphaelAPI.permission.playerRemoveGroup(player!!, group, reason)) {
+                if (RaphaelAPI.permission.playerRemoveGroup(player, group, reason)) {
                     notify(sender, "Remove \"&f${group}&7\" from \"&f${player.name}&7\"'s Groups. &8(reason: ${reason})")
                 } else {
                     notify(sender, "Failed.")
@@ -89,13 +91,20 @@ object CommandUser : CommandHandle() {
         }
         // RaphaelUserAddVariable [player] [key] [value(space=\s)] <time> <reason>
         command(name = "RaphaelUserAddVariable", aliases = listOf("ruaddv", "manuaddv"), permission = "raphael.command") {
-            fun invoke(sender: CommandSender, player: String, key: String, value: String, time: String = "0", reason: String = "command by ${sender.name}") {
-                val player = Bukkit.getPlayerExact(player)
+            fun invoke(
+                sender: CommandSender,
+                playerName: String,
+                key: String,
+                value: String,
+                time: String = "0",
+                reason: String = "command by ${sender.name}",
+            ) {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
                 }
-                if (RaphaelAPI.permission.playerAddVariable(player!!, key, value.replace("\\s", " "), CronusUtils.toMillis(time), reason)) {
+                if (RaphaelAPI.permission.playerAddVariable(player, key, value.replace("\\s", " "), time.parseMillis(), reason)) {
                     notify(
                         sender,
                         "Add \"&f${key} = ${value.replace("\\s", " ")}&7\" to \"&f${player.name}&7\"'s Variables. &8(time: ${time}, reason: ${reason})"
@@ -131,8 +140,8 @@ object CommandUser : CommandHandle() {
         }
         // RaphaelUserDelVariable [player] [key] <reason>
         command(name = "RaphaelUserDelVariable", aliases = listOf("rudelv", "manudelv"), permission = "raphael.command") {
-            fun invoke(sender: CommandSender, player: String, key: String, reason: String = "command by ${sender.name}") {
-                val player = Bukkit.getPlayerExact(player)
+            fun invoke(sender: CommandSender, playerName: String, key: String, reason: String = "command by ${sender.name}") {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
@@ -161,13 +170,13 @@ object CommandUser : CommandHandle() {
         }
         // RaphaelUserAddPermission [player] [permission] <time> <reason>
         command(name = "RaphaelUserAddPermission", aliases = listOf("ruaddp", "manuaddp"), permission = "raphael.command") {
-            fun invoke(sender: CommandSender, player: String, permission: String, time: String = "0", reason: String = "command by ${sender.name}") {
-                val player = Bukkit.getPlayerExact(player)
+            fun invoke(sender: CommandSender, playerName: String, permission: String, time: String = "0", reason: String = "command by ${sender.name}") {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
                 }
-                if (RaphaelAPI.permission.playerAdd(player, permission, CronusUtils.toMillis(time), reason)) {
+                if (RaphaelAPI.permission.playerAdd(player, permission, time.parseMillis(), reason)) {
                     notify(sender, "Add \"&f${permission}&7\" to \"&f${player.name}&7\"'s Permissions. &8(time: ${time}, reason: ${reason})")
                 } else {
                     notify(sender, "Failed.")
@@ -197,8 +206,8 @@ object CommandUser : CommandHandle() {
         }
         // RaphaelUserDelPermission [player] [permission] <reason>
         command(name = "RaphaelUserDelPermission", aliases = listOf("rudelp", "manudelp"), permission = "raphael.command") {
-            fun invoke(sender: CommandSender, player: String, permission: String, reason: String = "command by ${sender.name}") {
-                val player = Bukkit.getPlayerExact(player)
+            fun invoke(sender: CommandSender, playerName: String, permission: String, reason: String = "command by ${sender.name}") {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
@@ -227,8 +236,8 @@ object CommandUser : CommandHandle() {
         }
         // RaphaelUserClearPermission [player] <reason>
         command(name = "RaphaelUserClearPermission", aliases = listOf("ruclearp", "manuclearp"), permission = "raphael.command") {
-            fun invoke(sender: CommandSender, player: String, reason: String = "command by ${sender.name}") {
-                val player = Bukkit.getPlayerExact(player)
+            fun invoke(sender: CommandSender, playerName: String, reason: String = "command by ${sender.name}") {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
@@ -254,9 +263,9 @@ object CommandUser : CommandHandle() {
             }
         }
         // RaphaelUserClearVariables [player] <reason>
-        command(name = "RaphaelUserClearVariables",aliases = listOf(),permission = "raphael.command"){
-            fun invoke(sender: CommandSender, player: String, reason: String = "command by ${sender.name}") {
-                val player = Bukkit.getPlayerExact(player)
+        command(name = "RaphaelUserClearVariables", aliases = listOf(), permission = "raphael.command") {
+            fun invoke(sender: CommandSender, playerName: String, reason: String = "command by ${sender.name}") {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
@@ -282,9 +291,9 @@ object CommandUser : CommandHandle() {
             }
         }
         // RaphaelUserClearGroups [player] <reason>
-        command(name = "RaphaelUserClearGroups",aliases = listOf("ruclearg", "manuclearg"),permission = "raphael.command"){
-            fun invoke(sender: CommandSender, player: String, reason: String = "command by ${sender.name}") {
-                val player = Bukkit.getPlayerExact(player)
+        command(name = "RaphaelUserClearGroups", aliases = listOf("ruclearg", "manuclearg"), permission = "raphael.command") {
+            fun invoke(sender: CommandSender, playerName: String, reason: String = "command by ${sender.name}") {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
@@ -310,9 +319,9 @@ object CommandUser : CommandHandle() {
             }
         }
         // RaphaelUserCheckPermission [player] [permission]
-        command(name = "RaphaelUserCheckPermission",aliases = listOf("rucheckp", "manucheckp"),permission = "raphael.command"){
-            fun invoke(sender: CommandSender,player:String,permission:String, reason: String = "command by ${sender.name}") {
-                val player = Bukkit.getPlayerExact(player)
+        command(name = "RaphaelUserCheckPermission", aliases = listOf("rucheckp", "manucheckp"), permission = "raphael.command") {
+            fun invoke(sender: CommandSender, playerName: String, permission: String, reason: String = "command by ${sender.name}") {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
@@ -326,17 +335,17 @@ object CommandUser : CommandHandle() {
             // player
             dynamic {
                 // permission
-                dynamic{
-                    execute<CommandSender>{ sender, context, permission ->  
-                        invoke(sender,context.argument(-1)!!,permission)
+                dynamic {
+                    execute<CommandSender> { sender, context, permission ->
+                        invoke(sender, context.argument(-1)!!, permission)
                     }
                 }
             }
         }
         // RaphaelUserListPermission [player]
-        command(name = "RaphaelUserListPermission",aliases = listOf("rulistp", "manulistp"),permission = "raphael.command"){
-            fun invoke(sender: CommandSender,player:String) {
-                val player = Bukkit.getPlayerExact(player)
+        command(name = "RaphaelUserListPermission", aliases = listOf("rulistp", "manulistp"), permission = "raphael.command") {
+            fun invoke(sender: CommandSender, playerName: String) {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
@@ -347,31 +356,31 @@ object CommandUser : CommandHandle() {
                     notify(sender, "- §fNULL")
                 } else {
                     list.forEach { permission ->
-                        TellrawJson.create()
+                        TellrawJson()
                             .append("§c[Raphael] §7- §f")
-                            .append(permission.name).hoverText("§nCOPY").clickSuggest(permission.name)
+                            .append(permission.name).hoverText("§nCOPY").suggestCommand(permission.name)
                             .run {
                                 if (permission.expired == 0L) {
                                     append(" §8(expired: §f-§8)")
                                 } else {
                                     append(" §8(expired: §f${format.format(permission.expired)}§8)")
                                 }
-                                send(sender)
+                                sendTo(adaptCommandSender(sender))
                             }
                     }
                 }
             }
             // player
             dynamic {
-                execute<CommandSender>{ sender, _, player ->  
-                    invoke(sender,player)
+                execute<CommandSender> { sender, _, player ->
+                    invoke(sender, player)
                 }
             }
         }
         // RaphaelUserListVariables [player]
-        command(name = "RaphaelUserListVariables",aliases = listOf("rulistv", "manulistv"),permission = "raphael.command"){
-            fun invoke(sender: CommandSender,player:String) {
-                val player = Bukkit.getPlayerExact(player)
+        command(name = "RaphaelUserListVariables", aliases = listOf("rulistv", "manulistv"), permission = "raphael.command") {
+            fun invoke(sender: CommandSender, playerName: String) {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
@@ -382,33 +391,33 @@ object CommandUser : CommandHandle() {
                     notify(sender, "- §fNULL")
                 } else {
                     list.forEach { v ->
-                        TellrawJson.create()
+                        TellrawJson()
                             .append("§c[Raphael] §7- §f")
-                            .append(v.name).hoverText("§nCOPY").clickSuggest(v.name)
+                            .append(v.name).hoverText("§nCOPY").suggestCommand(v.name)
                             .append("§8: ")
-                            .append(v.data).hoverText("§nCOPY").clickSuggest(v.data)
+                            .append(v.data).hoverText("§nCOPY").suggestCommand(v.data)
                             .run {
                                 if (v.expired == 0L) {
                                     append(" §8(expired: §f-§8)")
                                 } else {
                                     append(" §8(expired: §f${format.format(v.expired)}§8)")
                                 }
-                                send(sender)
+                                sendTo(adaptCommandSender(sender))
                             }
                     }
                 }
             }
             // player
             dynamic {
-                execute<CommandSender>{ sender, _, player ->
-                    invoke(sender,player)
+                execute<CommandSender> { sender, _, player ->
+                    invoke(sender, player)
                 }
             }
         }
         // RaphaelUserListGroups [player]
-        command(name = "RaphaelUserListGroups",aliases = listOf("rulistg", "manulistg"),permission = "raphael.command"){
-            fun invoke(sender: CommandSender,player:String) {
-                val player = Bukkit.getPlayerExact(player)
+        command(name = "RaphaelUserListGroups", aliases = listOf("rulistg", "manulistg"), permission = "raphael.command") {
+            fun invoke(sender: CommandSender, playerName: String) {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
@@ -422,44 +431,45 @@ object CommandUser : CommandHandle() {
                     notify(sender, "- §fNULL")
                 } else {
                     list.forEach { group ->
-                        TellrawJson.create()
+                        TellrawJson()
                             .append("§c[Raphael] §7- §f")
-                            .append(group.name).hoverText("§nCOPY").clickSuggest(group.name)
+                            .append(group.name).hoverText("§nCOPY").suggestCommand(group.name)
                             .run {
                                 if (group.expired == 0L) {
                                     append(" §8(expired: §f-§8)")
                                 } else {
                                     append(" §8(expired: §f${format.format(group.expired)}§8)")
                                 }
-                                send(sender)
+                                sendTo(adaptCommandSender(sender))
                             }
                     }
                 }
             }
             // player
             dynamic {
-                execute<CommandSender>{ sender, _, player ->
-                    invoke(sender,player)
+                execute<CommandSender> { sender, _, player ->
+                    invoke(sender, player)
                 }
             }
         }
         // RaphaelUserInfo [player]
-        command(name = "RaphaelUserInfo",aliases = listOf("ruinfo", "ruwhois", "manuwhois"),permission = "raphael.command"){
-            fun invoke(sender: CommandSender,player:String) {
-                val player = Bukkit.getPlayerExact(player)
+        command(name = "RaphaelUserInfo", aliases = listOf("ruinfo", "ruwhois", "manuwhois"), permission = "raphael.command") {
+            fun invoke(sender: CommandSender, playerName: String) {
+                val player = Bukkit.getPlayerExact(playerName)
                 if (player == null) {
                     notify(sender, "Player \"&f${player}&7\" Not Found.")
                     return
                 }
                 notify(sender, "Information:")
-                Features.dispatchCommand(sender, "rulistp ${player.name}")
-                Features.dispatchCommand(sender, "rulistv ${player.name}")
-                Features.dispatchCommand(sender, "rulistg ${player.name}")
+                val adapt = adaptCommandSender(sender)
+                adapt.performCommand("rulistp ${player.name}")
+                adapt.performCommand("rulistv ${player.name}")
+                adapt.performCommand("rulistg ${player.name}")
             }
             // player
             dynamic {
-                execute<CommandSender>{ sender, _, player ->
-                    invoke(sender,player)
+                execute<CommandSender> { sender, _, player ->
+                    invoke(sender, player)
                 }
             }
         }
