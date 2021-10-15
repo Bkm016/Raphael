@@ -5,6 +5,8 @@ import org.bukkit.command.CommandSender
 import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.command.command
+import taboolib.common.platform.function.adaptCommandSender
+import taboolib.common.platform.function.adaptPlayer
 import taboolib.module.chat.TellrawJson
 
 object CommandGroup : CommandHandle() {
@@ -71,15 +73,7 @@ object CommandGroup : CommandHandle() {
                     return
                 }
                 if (RaphaelAPI.permission.groupAddVariable(group, key, value.replace("\\s", " "), reason)) {
-                    notify(
-                        sender,
-                        "Add \"&f${key} = ${
-                            value.replace(
-                                "\\s",
-                                " "
-                            )
-                        }&7\" to \"&f${group}&7\"'s Variables. &8(reason: ${reason})"
-                    )
+                    notify(sender, "Add \"&f${key} = ${value.replace("\\s", " ")}&7\" to \"&f${group}&7\"'s Variables. &8(reason: ${reason})")
                 } else {
                     notify(sender, "Failed.")
                 }
@@ -199,10 +193,7 @@ object CommandGroup : CommandHandle() {
                 }
                 RaphaelAPI.permission.groupPermissions(group).forEach { permission ->
                     if (RaphaelAPI.permission.groupRemovePermission(group, permission, reason)) {
-                        notify(
-                            sender,
-                            "Remove \"&f$permission&7\" from \"&f${group}&7\"'s Permissions. &8(reason: ${reason})"
-                        )
+                        notify(sender, "Remove \"&f$permission&7\" from \"&f${group}&7\"'s Permissions. &8(reason: ${reason})")
                     }
                 }
                 notify(sender, "Done.")
@@ -227,7 +218,7 @@ object CommandGroup : CommandHandle() {
                     notify(sender, "Group \"&f${group}&7\" Not Found.")
                     return
                 }
-                RaphaelAPI.permission.groupVariables(group).forEach { k, _ ->
+                RaphaelAPI.permission.groupVariables(group).forEach { (k, _) ->
                     if (RaphaelAPI.permission.groupRemoveVariable(group, k, reason)) {
                         notify(sender, "Remove \"&f$k&7\" from \"&f${group}&7\"'s Variables. &8(reason: ${reason})")
                     }
@@ -260,10 +251,10 @@ object CommandGroup : CommandHandle() {
                     notify(sender, "- §fNULL")
                 } else {
                     list.forEach { permission ->
-                        TellrawJson.create()
+                        TellrawJson()
                             .append("§c[Raphael] §7- §f")
-                            .append(permission).hoverText("§nCOPY").clickSuggest(permission)
-                            .send(sender)
+                            .append(permission).hoverText("§nCOPY").suggestCommand(permission)
+                            .sendTo(adaptCommandSender(sender))
                     }
                 }
             }
@@ -286,13 +277,13 @@ object CommandGroup : CommandHandle() {
                 if (list.isEmpty()) {
                     notify(sender, "- §fNULL")
                 } else {
-                    list.forEach { k, v ->
-                        TellrawJson.create()
+                    list.forEach { (k, v) ->
+                        TellrawJson()
                             .append("§c[Raphael] §7- §f")
-                            .append(k).hoverText("§nCOPY").clickSuggest(k)
+                            .append(k).hoverText("§nCOPY").suggestCommand(k)
                             .append("§8: ")
-                            .append(v).hoverText("§nCOPY").clickSuggest(v)
-                            .send(sender)
+                            .append(v).hoverText("§nCOPY").suggestCommand(v)
+                            .sendTo(adaptCommandSender(sender))
                     }
                 }
             }
@@ -311,8 +302,8 @@ object CommandGroup : CommandHandle() {
                     return
                 }
                 notify(sender, "Information:")
-                Commands.dispatchCommand(sender, "rglistp ${group}")
-                Commands.dispatchCommand(sender, "rglistv ${group}")
+                adaptPlayer(sender).performCommand("rglistp ${group}")
+                adaptPlayer(sender).performCommand("rglistv ${group}")
             }
             // group
             dynamic {
