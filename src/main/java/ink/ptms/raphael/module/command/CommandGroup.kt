@@ -31,7 +31,7 @@ object CommandGroup : CommandHandle() {
                 // reason
                 dynamic(optional = true) {
                     execute<CommandSender> { sender, context, reason ->
-                        invoke(sender, context.argument(-1)!!, reason)
+                        invoke(sender, context.argument(-1), reason)
                     }
                 }
                 execute<CommandSender> { sender, context, group ->
@@ -54,10 +54,11 @@ object CommandGroup : CommandHandle() {
             }
             // group
             dynamic {
+                suggestion<CommandSender> { _, _ -> RaphaelAPI.permission.groups.toList() }
                 // reason
                 dynamic(optional = true) {
                     execute<CommandSender> { sender, context, reason ->
-                        invoke(sender, context.argument(-1)!!, reason)
+                        invoke(sender, context.argument(-1), reason)
                     }
                 }
                 execute<CommandSender> { sender, context, group ->
@@ -80,6 +81,7 @@ object CommandGroup : CommandHandle() {
             }
             // group
             dynamic {
+                suggestion<CommandSender> { _, _ -> RaphaelAPI.permission.groups.toList() }
                 // key
                 dynamic {
                     // value
@@ -87,11 +89,11 @@ object CommandGroup : CommandHandle() {
                         // reason
                         dynamic(optional = true) {
                             execute<CommandSender> { sender, context, reason ->
-                                invoke(sender, context.argument(-3)!!, context.argument(-2)!!, context.argument(-1)!!, reason)
+                                invoke(sender, context.argument(-3), context.argument(-2), context.argument(-1), reason)
                             }
                         }
                         execute<CommandSender> { sender, context, value ->
-                            invoke(sender, context.argument(-2)!!, context.argument(-1)!!, value)
+                            invoke(sender, context.argument(-2), context.argument(-1), value)
                         }
                     }
                 }
@@ -112,16 +114,17 @@ object CommandGroup : CommandHandle() {
             }
             // group
             dynamic {
+                suggestion<CommandSender> { _, _ -> RaphaelAPI.permission.groups.toList() }
                 // key
                 dynamic {
                     // reason
                     dynamic(optional = true) {
                         execute<CommandSender> { sender, context, reason ->
-                            invoke(sender, context.argument(-2)!!, context.argument(-1)!!, reason)
+                            invoke(sender, context.argument(-2), context.argument(-1), reason)
                         }
                     }
                     execute<CommandSender> { sender, context, key ->
-                        invoke(sender, context.argument(-1)!!, key)
+                        invoke(sender, context.argument(-1), key)
                     }
                 }
             }
@@ -141,16 +144,17 @@ object CommandGroup : CommandHandle() {
             }
             // group
             dynamic {
+                suggestion<CommandSender> { _, _ -> RaphaelAPI.permission.groups.toList() }
                 // key
                 dynamic {
                     // reason
                     dynamic(optional = true) {
                         execute<CommandSender> { sender, context, reason ->
-                            invoke(sender, context.argument(-2)!!, context.argument(-1)!!, reason)
+                            invoke(sender, context.argument(-2), context.argument(-1), reason)
                         }
                     }
                     execute<CommandSender> { sender, context, key ->
-                        invoke(sender, context.argument(-1)!!, key)
+                        invoke(sender, context.argument(-1), key)
                     }
                 }
             }
@@ -170,16 +174,17 @@ object CommandGroup : CommandHandle() {
             }
             // group
             dynamic {
+                suggestion<CommandSender> { _, _ -> RaphaelAPI.permission.groups.toList() }
                 // key
                 dynamic {
                     // reason
                     dynamic(optional = true) {
                         execute<CommandSender> { sender, context, reason ->
-                            invoke(sender, context.argument(-2)!!, context.argument(-1)!!, reason)
+                            invoke(sender, context.argument(-2), context.argument(-1), reason)
                         }
                     }
                     execute<CommandSender> { sender, context, key ->
-                        invoke(sender, context.argument(-1)!!, key)
+                        invoke(sender, context.argument(-1), key)
                     }
                 }
             }
@@ -203,7 +208,7 @@ object CommandGroup : CommandHandle() {
                 // reason
                 dynamic(optional = true) {
                     execute<CommandSender> { sender, context, reason ->
-                        invoke(sender, context.argument(-1)!!, reason)
+                        invoke(sender, context.argument(-1), reason)
                     }
                 }
                 execute<CommandSender> { sender, context, group ->
@@ -227,10 +232,11 @@ object CommandGroup : CommandHandle() {
             }
             // group
             dynamic {
+                suggestion<CommandSender> { _, _ -> RaphaelAPI.permission.groups.toList() }
                 // reason
                 dynamic(optional = true) {
                     execute<CommandSender> { sender, context, reason ->
-                        invoke(sender, context.argument(-1)!!, reason)
+                        invoke(sender, context.argument(-1), reason)
                     }
                 }
                 execute<CommandSender> { sender, context, group ->
@@ -260,6 +266,7 @@ object CommandGroup : CommandHandle() {
             }
             // group
             dynamic {
+                suggestion<CommandSender> { _, _ -> RaphaelAPI.permission.groups.toList() }
                 execute<CommandSender> { sender, context, group ->
                     invoke(sender, group)
                 }
@@ -289,6 +296,7 @@ object CommandGroup : CommandHandle() {
             }
             // group
             dynamic {
+                suggestion<CommandSender> { _, _ -> RaphaelAPI.permission.groups.toList() }
                 execute<CommandSender> { sender, context, group ->
                     invoke(sender, group)
                 }
@@ -307,6 +315,7 @@ object CommandGroup : CommandHandle() {
             }
             // group
             dynamic {
+                suggestion<CommandSender> { _, _ -> RaphaelAPI.permission.groups.toList() }
                 execute<CommandSender> { sender, context, group ->
                     invoke(sender, group)
                 }

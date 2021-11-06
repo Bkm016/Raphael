@@ -9,8 +9,7 @@ Logs:
     - org.bukkit.command.Command
 
 Database:
-  # LOCAL、SQL
-  use: SQL
+  use: LOCAL
   source:
     SQL:
       host: localhost
@@ -19,3 +18,4 @@ Database:
       password: root
       database: test
       table: raphael
+  user-index: UUID

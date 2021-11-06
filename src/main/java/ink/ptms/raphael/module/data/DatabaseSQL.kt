@@ -1,11 +1,10 @@
 package ink.ptms.raphael.module.data
 
 import ink.ptms.raphael.Raphael
-import io.izzel.taboolib.kotlin.Tasks
-import io.izzel.taboolib.module.db.sql.*
-import io.izzel.taboolib.module.db.sql.query.Where
-import io.izzel.taboolib.module.inject.PlayerContainer
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerQuitEvent
+import taboolib.common.platform.event.SubscribeEvent
+import taboolib.common.platform.function.submit
 import taboolib.module.database.ColumnOptionSQL
 import taboolib.module.database.ColumnTypeSQL
 import taboolib.module.database.Table
@@ -130,49 +129,53 @@ class DatabaseSQL : Database() {
         return userId
     }
 
-    fun updateUserTime(userId: Long) = tableUser.update(Where.equals("id", userId))
-        .set("time", Date())
-        .run(dataSource)
+    fun updateUserTime(userId: Long) {
+        tableUser.update(dataSource) {
+            where("id" eq userId)
+            set("time", Date())
+        }
+    }
 
     fun createUser(player: Player): CompletableFuture<Long> {
         val userId = CompletableFuture<Long>()
         CompletableFuture<Void>().also { future ->
-            tableUser.insert(null, player.name, player.uniqueId, Date())
-                .to(dataSource)
-                .statement { stmt ->
+            tableUser.insert(dataSource, "name", "uuid", "time") {
+                value(player.name, player.uniqueId, Date())
+                onFinally {
                     future.thenApply {
-                        userId.complete(stmt.generatedKeys.getLong("id"))
+                        userId.complete(generatedKeys.getLong("id"))
                     }
-                }.run()
+                }
+            }
         }.complete(null)
         return userId
     }
 
     fun getUserPermissions(user: Long): List<SerializedPermissions.Permission> {
-        return tablePermission.select(Where.equals("user", user), Where.equals("value", true), Where.more("expired", System.currentTimeMillis()))
-            .row("permission", "expired")
-            .to(dataSource)
-            .map {
-                SerializedPermissions.Permission(it.getString("permission"), it.getDate("expired").time)
-            }
+        return tablePermission.select(dataSource) {
+            where("user" eq user and ("value" eq true))
+            rows("permission", "expired")
+        }.map {
+            SerializedPermissions.Permission(getString("permission"), getDate("expired").time)
+        }
     }
 
     fun getUserVariables(user: Long): List<SerializedVariables.Variable> {
-        return tableVariable.select(Where.equals("user", user), Where.equals("value", true), Where.more("expired", System.currentTimeMillis()))
-            .row("variable", "data", "expired")
-            .to(dataSource)
-            .map {
-                SerializedVariables.Variable(it.getString("variable"), it.getString("data"), it.getDate("expired").time)
-            }
+        return tableVariable.select(dataSource) {
+            where("user" eq user and ("value" eq true))
+            rows("variable", "data", "expired")
+        }.map {
+            SerializedVariables.Variable(getString("variable"), getString("data"), getDate("expired").time)
+        }
     }
 
     fun getUserGroups(user: Long): List<SerializedGroups.Group> {
-        return tablePermission.select(Where.equals("user", user), Where.equals("value", true), Where.more("expired", System.currentTimeMillis()))
-            .row("group", "expired")
-            .to(dataSource)
-            .map {
-                SerializedGroups.Group(it.getString("group"), it.getDate("expired").time)
-            }
+        return tablePermission.select(dataSource) {
+            where("user" eq user and ("value" eq true))
+            rows("group", "expired")
+        }.map {
+            SerializedGroups.Group(getString("group"), getDate("expired").time)
+        }
     }
 
     override fun getPermissions(player: Player): SerializedPermissions {
@@ -180,9 +183,7 @@ class DatabaseSQL : Database() {
         if (user == -1L) {
             return SerializedPermissions(emptyList())
         }
-        Tasks.task(true) {
-            updateUserTime(user)
-        }
+        submit(async = true) { updateUserTime(user) }
         return SerializedPermissions(getUserPermissions(user))
     }
 
@@ -191,9 +192,7 @@ class DatabaseSQL : Database() {
         if (user == -1L) {
             return SerializedVariables(emptyList())
         }
-        Tasks.task(true) {
-            updateUserTime(user)
-        }
+        submit(async = true) { updateUserTime(user) }
         return SerializedVariables(getUserVariables(user))
     }
 
@@ -202,9 +201,7 @@ class DatabaseSQL : Database() {
         if (user == -1L) {
             return SerializedGroups(emptyList())
         }
-        Tasks.task(true) {
-            updateUserTime(user)
-        }
+        submit(async = true) { updateUserTime(user) }
         return SerializedGroups(getUserGroups(user))
     }
 
@@ -212,17 +209,24 @@ class DatabaseSQL : Database() {
         val user = getUserId(player)
         if (user == -1L) {
             createUser(player).thenApply { userId ->
-                tablePermission.insert(null, userId, permission.name, value, permission.expired).run(dataSource)
+                tablePermission.insert(dataSource, "user", "permission", "value", "expired") {
+                    value(userId, permission.name, value, permission.expired)
+                }
             }
         } else {
-            tablePermission.update(Where.equals("user", user), Where.equals("permission", permission.name))
-                .insertIfAbsent(null, user, permission.name, value, permission.expired)
-                .set("value", value)
-                .also {
+            if (tablePermission.find(dataSource) { where("user" eq user and ("permission" eq permission.name)) }) {
+                tablePermission.update(dataSource) {
+                    where("user" eq user and ("permission" eq permission.name))
+                    set("value", value)
                     if (value) {
-                        it.set("expired", permission.expired)
+                        set("expired", permission.expired)
                     }
-                }.run(dataSource)
+                }
+            } else {
+                tablePermission.insert(dataSource, "user", "permission", "value", "expired") {
+                    value(user, permission.name, value, permission.expired)
+                }
+            }
         }
     }
 
@@ -230,18 +234,25 @@ class DatabaseSQL : Database() {
         val user = getUserId(player)
         if (user == -1L) {
             createUser(player).thenApply { userId ->
-                tableVariable.insert(null, userId, variable.name, variable.data, value, variable.expired).run(dataSource)
+                tableVariable.insert(dataSource, "user", "variable", "value", "expired") {
+                    value(userId, variable.name, variable.data, value, variable.expired)
+                }
             }
         } else {
-            tableVariable.update(Where.equals("user", user), Where.equals("variable", variable.name))
-                .insertIfAbsent(null, user, variable.name, variable.data, value, variable.expired)
-                .set("value", value)
-                .also {
+            if (tableVariable.find(dataSource) { where("user" eq user and ("variable" eq variable.name)) }) {
+                tableVariable.update(dataSource) {
+                    where("user" eq user and ("variable" eq variable.name))
+                    set("value", value)
                     if (value) {
-                        it.set("data", variable.data)
-                        it.set("expired", variable.expired)
+                        set("data", variable.data)
+                        set("expired", variable.expired)
                     }
-                }.run(dataSource)
+                }
+            } else {
+                tableVariable.insert(dataSource, "user", "variable", "value", "data", "expired") {
+                    value(user, variable.name, value, variable.data, variable.expired)
+                }
+            }
         }
     }
 
@@ -249,23 +260,34 @@ class DatabaseSQL : Database() {
         val user = getUserId(player)
         if (user == -1L) {
             createUser(player).thenApply { userId ->
-                tableGroup.insert(null, userId, group.name, value, group.expired).run(dataSource)
+                tableVariable.insert(dataSource, "user", "group", "value", "expired") {
+                    value(userId, group.name, value, group.expired)
+                }
             }
         } else {
-            tableGroup.update(Where.equals("user", user), Where.equals("group", group.name))
-                .insertIfAbsent(null, user, group.name, value, group.expired)
-                .set("value", value)
-                .also {
+            if (tableGroup.find(dataSource) { where("user" eq user and ("group" eq group.name)) }) {
+                tableGroup.update(dataSource) {
+                    where("user" eq user and ("group" eq group.name))
+                    set("value", value)
                     if (value) {
-                        it.set("expired", group.expired)
+                        set("expired", group.expired)
                     }
-                }.run(dataSource)
+                }
+            } else {
+                tableGroup.insert(dataSource, "user", "group", "value", "expired") {
+                    value(user, group.name, value, group.expired)
+                }
+            }
         }
     }
 
     companion object {
 
-        @PlayerContainer
         private val cacheUserId = ConcurrentHashMap<String, Long>()
+
+        @SubscribeEvent
+        fun e(e: PlayerQuitEvent) {
+            cacheUserId.remove(e.player.name)
+        }
     }
 }

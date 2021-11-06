@@ -11,7 +11,7 @@ import ink.ptms.raphael.Raphael
  */
 enum class Type {
 
-    LOCAL, SQL, MONGODB;
+    LOCAL, SQL;
 
     companion object {
 

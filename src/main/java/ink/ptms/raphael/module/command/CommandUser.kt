@@ -8,6 +8,7 @@ import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.command.command
 import taboolib.common.platform.function.adaptCommandSender
+import taboolib.common.platform.function.onlinePlayers
 import taboolib.common5.util.parseMillis
 import taboolib.module.chat.TellrawJson
 
@@ -35,22 +36,24 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 // group
                 dynamic {
+                    suggestion<CommandSender> { _, _ -> RaphaelAPI.permission.groups.toList() }
                     // time
                     dynamic(optional = true) {
                         // reason
                         dynamic(optional = true) {
                             execute<CommandSender> { sender, context, reason ->
-                                invoke(sender, context.argument(-3)!!, context.argument(-2)!!, context.argument(-1)!!, reason)
+                                invoke(sender, context.argument(-3), context.argument(-2), context.argument(-1), reason)
                             }
                         }
                         execute<CommandSender> { sender, context, time ->
-                            invoke(sender, context.argument(-2)!!, context.argument(-1)!!, time)
+                            invoke(sender, context.argument(-2), context.argument(-1), time)
                         }
                     }
                     execute<CommandSender> { sender, context, group ->
-                        invoke(sender, context.argument(-1)!!, group)
+                        invoke(sender, context.argument(-1), group)
                     }
                 }
             }
@@ -75,16 +78,18 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 // group
                 dynamic {
+                    suggestion<CommandSender> { _, _ -> RaphaelAPI.permission.groups.toList() }
                     // reason
                     dynamic(optional = true) {
                         execute<CommandSender> { sender, context, reason ->
-                            invoke(sender, context.argument(-2)!!, context.argument(-1)!!, reason)
+                            invoke(sender, context.argument(-2), context.argument(-1), reason)
                         }
                     }
                     execute<CommandSender> { sender, context, group ->
-                        invoke(sender, context.argument(-1)!!, group)
+                        invoke(sender, context.argument(-1), group)
                     }
                 }
             }
@@ -115,6 +120,7 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 // key
                 dynamic {
                     // value
@@ -124,15 +130,15 @@ object CommandUser : CommandHandle() {
                             // reason
                             dynamic(optional = true) {
                                 execute<CommandSender> { sender, context, reason ->
-                                    invoke(sender, context.argument(-4)!!, context.argument(-3)!!, context.argument(-2)!!, context.argument(-1)!!, reason)
+                                    invoke(sender, context.argument(-4), context.argument(-3), context.argument(-2), context.argument(-1), reason)
                                 }
                             }
                             execute<CommandSender> { sender, context, time ->
-                                invoke(sender, context.argument(-3)!!, context.argument(-2)!!, context.argument(-1)!!, time)
+                                invoke(sender, context.argument(-3), context.argument(-2), context.argument(-1), time)
                             }
                         }
                         execute<CommandSender> { sender, context, value ->
-                            invoke(sender, context.argument(-2)!!, context.argument(-1)!!, value)
+                            invoke(sender, context.argument(-2), context.argument(-1), value)
                         }
                     }
                 }
@@ -154,16 +160,17 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 // key
                 dynamic {
                     // reason
                     dynamic(optional = true) {
                         execute<CommandSender> { sender, context, reason ->
-                            invoke(sender, context.argument(-2)!!, context.argument(-1)!!, reason)
+                            invoke(sender, context.argument(-2), context.argument(-1), reason)
                         }
                     }
                     execute<CommandSender> { sender, context, key ->
-                        invoke(sender, context.argument(-1)!!, key)
+                        invoke(sender, context.argument(-1), key)
                     }
                 }
             }
@@ -184,6 +191,7 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 // permission
                 dynamic {
                     // time
@@ -191,15 +199,15 @@ object CommandUser : CommandHandle() {
                         // reason    
                         dynamic(optional = true) {
                             execute<CommandSender> { sender, context, reason ->
-                                invoke(sender, context.argument(-3)!!, context.argument(-2)!!, context.argument(-1)!!, reason)
+                                invoke(sender, context.argument(-3), context.argument(-2), context.argument(-1), reason)
                             }
                         }
                         execute<CommandSender> { sender, context, time ->
-                            invoke(sender, context.argument(-2)!!, context.argument(-1)!!, time)
+                            invoke(sender, context.argument(-2), context.argument(-1), time)
                         }
                     }
                     execute<CommandSender> { sender, context, permission ->
-                        invoke(sender, context.argument(-1)!!, permission)
+                        invoke(sender, context.argument(-1), permission)
                     }
                 }
             }
@@ -220,16 +228,17 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 // permission
                 dynamic {
                     // reason
                     dynamic(optional = true) {
                         execute<CommandSender> { sender, context, reason ->
-                            invoke(sender, context.argument(-2)!!, context.argument(-1)!!, reason)
+                            invoke(sender, context.argument(-2), context.argument(-1), reason)
                         }
                     }
                     execute<CommandSender> { sender, context, permission ->
-                        invoke(sender, context.argument(-1)!!, permission)
+                        invoke(sender, context.argument(-1), permission)
                     }
                 }
             }
@@ -251,10 +260,11 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 // reason
                 dynamic(optional = true) {
                     execute<CommandSender> { sender, context, reason ->
-                        invoke(sender, context.argument(-1)!!, reason)
+                        invoke(sender, context.argument(-1), reason)
                     }
                 }
                 execute<CommandSender> { sender, _, player ->
@@ -279,10 +289,11 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 // reason
                 dynamic(optional = true) {
                     execute<CommandSender> { sender, context, reason ->
-                        invoke(sender, context.argument(-1)!!, reason)
+                        invoke(sender, context.argument(-1), reason)
                     }
                 }
                 execute<CommandSender> { sender, _, player ->
@@ -307,10 +318,11 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 // reason
                 dynamic(optional = true) {
                     execute<CommandSender> { sender, context, reason ->
-                        invoke(sender, context.argument(-1)!!, reason)
+                        invoke(sender, context.argument(-1), reason)
                     }
                 }
                 execute<CommandSender> { sender, _, player ->
@@ -334,10 +346,11 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 // permission
                 dynamic {
                     execute<CommandSender> { sender, context, permission ->
-                        invoke(sender, context.argument(-1)!!, permission)
+                        invoke(sender, context.argument(-1), permission)
                     }
                 }
             }
@@ -372,6 +385,7 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 execute<CommandSender> { sender, _, player ->
                     invoke(sender, player)
                 }
@@ -409,6 +423,7 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 execute<CommandSender> { sender, _, player ->
                     invoke(sender, player)
                 }
@@ -447,6 +462,7 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 execute<CommandSender> { sender, _, player ->
                     invoke(sender, player)
                 }
@@ -468,6 +484,7 @@ object CommandUser : CommandHandle() {
             }
             // player
             dynamic {
+                suggestion<CommandSender> { _, _ -> onlinePlayers().map { it.name } }
                 execute<CommandSender> { sender, _, player ->
                     invoke(sender, player)
                 }

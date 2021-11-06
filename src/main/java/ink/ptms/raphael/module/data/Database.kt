@@ -31,8 +31,7 @@ abstract class Database {
         val INSTANCE = try {
             when (Type.INSTANCE) {
                 Type.SQL -> DatabaseSQL()
-                Type.LOCAL -> DatabaseSQL()
-                Type.MONGODB -> DatabaseSQL()
+                Type.LOCAL -> DatabaseSQLite()
             }
         } catch (e: Throwable) {
             DatabaseError(e)
