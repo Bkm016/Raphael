@@ -20,7 +20,7 @@ taboolib {
     install("module-nms")
     install("platform-bukkit")
     classifier = null
-    version = "6.0.4-1"
+    version = "6.0.4-3"
 }
 
 repositories {
