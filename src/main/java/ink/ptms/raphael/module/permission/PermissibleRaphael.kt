@@ -15,8 +15,8 @@ import taboolib.module.configuration.createLocal
 import java.util.*
 
 /**
- * @Author sky
- * @Since 2020-01-31 23:48
+ * @author sky
+ * @since 2020-01-31 23:48
  */
 class PermissibleRaphael : PermissibleBase(null) {
 

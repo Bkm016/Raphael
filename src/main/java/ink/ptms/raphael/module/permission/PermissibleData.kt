@@ -4,8 +4,8 @@ import org.bukkit.permissions.PermissionAttachment
 import taboolib.common.reflect.Reflex.Companion.getProperty
 
 /**
- * @Author sky
- * @Since 2020-01-31 23:55
+ * @author sky
+ * @since 2020-01-31 23:55
  */
 @Suppress("UNCHECKED_CAST")
 class PermissibleData(val permissionAttachment: PermissionAttachment) {

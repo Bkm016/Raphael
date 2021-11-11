@@ -16,8 +16,8 @@ import taboolib.common.platform.function.submit
 import taboolib.common.reflect.Reflex.Companion.unsafeInstance
 
 /**
- * @Author sky
- * @Since 2020-02-01 17:40
+ * @author sky
+ * @since 2020-02-01 17:40
  */
 internal object Events {
 

@@ -17,8 +17,8 @@ import taboolib.module.configuration.createLocal
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * @Author sky
- * @Since 2019-11-27 21:06
+ * @author sky
+ * @since 2019-11-27 21:06
  */
 class RaphaelHook : Permission() {
 

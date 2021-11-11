@@ -15,7 +15,7 @@ object Raphael : Plugin() {
     lateinit var conf: SecuredFile
         private set
 
-    override fun onLoad() {
+    override fun onEnable() {
         Bukkit.getServicesManager().register(Permission::class.java, RaphaelHook(), BukkitPlugin.getInstance(), ServicePriority.Normal)
     }
 

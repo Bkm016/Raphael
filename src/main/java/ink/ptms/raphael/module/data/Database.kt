@@ -28,13 +28,15 @@ abstract class Database {
 
     companion object {
 
-        val INSTANCE = try {
-            when (Type.INSTANCE) {
-                Type.SQL -> DatabaseSQL()
-                Type.LOCAL -> DatabaseSQLite()
+        val INSTANCE by lazy {
+            try {
+                when (Type.INSTANCE) {
+                    Type.SQL -> DatabaseSQL()
+                    Type.LOCAL -> DatabaseSQLite()
+                }
+            } catch (e: Throwable) {
+                DatabaseError(e)
             }
-        } catch (e: Throwable) {
-            DatabaseError(e)
         }
 
         @SubscribeEvent
