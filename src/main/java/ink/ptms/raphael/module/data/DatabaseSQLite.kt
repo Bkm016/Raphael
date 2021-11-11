@@ -100,7 +100,7 @@ class DatabaseSQLite : Database() {
     }
 
     fun getUserGroups(user: String): List<SerializedGroups.Group> {
-        return tablePermission.select(dataSource) {
+        return tableGroup.select(dataSource) {
             where("user" eq user and ("value" eq 1))
             rows("group", "expired")
         }.map {
