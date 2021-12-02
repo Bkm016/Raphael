@@ -20,7 +20,6 @@ import java.util.*
  */
 class PermissibleRaphael : PermissibleBase(null) {
 
-    val data = createLocal("data.yml")
     var humanEntity: HumanEntity? = null
     var permissibleBase: PermissibleBase? = null
 
