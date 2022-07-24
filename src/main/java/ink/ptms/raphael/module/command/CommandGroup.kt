@@ -6,7 +6,6 @@ import taboolib.common.LifeCycle
 import taboolib.common.platform.Awake
 import taboolib.common.platform.command.command
 import taboolib.common.platform.function.adaptCommandSender
-import taboolib.common.platform.function.adaptPlayer
 import taboolib.module.chat.TellrawJson
 
 object CommandGroup : CommandHandle() {
@@ -40,7 +39,7 @@ object CommandGroup : CommandHandle() {
             }
         }
         // RaphaelGroupDel [group] <reason>
-        command(name = "RaphaelGroupDel", aliases = listOf("rgadd", "mangadd"), permission = "raphael.command") {
+        command(name = "RaphaelGroupDel", aliases = listOf("rgdel", "mangdel"), permission = "raphael.command") {
             fun invoke(sender: CommandSender, group: String, reason: String = "command by ${sender.name}") {
                 if (!RaphaelAPI.permission.groups.contains(group)) {
                     notify(sender, "Group \"&f${group}&7\" Not Found.")
