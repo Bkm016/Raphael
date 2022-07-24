@@ -130,7 +130,7 @@ object CommandGroup : CommandHandle() {
             }
         }
         // RaphaelGroupAddPermission [group] [key] <reason>
-        command(name = "RaphaelGroupAddPermission", aliases = listOf("rgdelv", "mangdelv"), permission = "raphael.command") {
+        command(name = "RaphaelGroupAddPermission", aliases = listOf("rgaddp", "mangaddp"), permission = "raphael.command") {
             fun invoke(sender: CommandSender, group: String, key: String, reason: String = "command by ${sender.name}") {
                 if (!RaphaelAPI.permission.groups.contains(group)) {
                     notify(sender, "Group \"&f${group}&7\" Not Found.")
