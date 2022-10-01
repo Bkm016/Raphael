@@ -31,7 +31,7 @@ class RaphaelHook : Permission() {
         private val groupsMap = ConcurrentHashMap<String, SerializedGroups>()
 
         @SubscribeEvent
-        fun e(e: PlayerQuitEvent) {
+        fun onQuit(e: PlayerQuitEvent) {
             permissionsMap.remove(e.player.name)
             variablesMap.remove(e.player.name)
             groupsMap.remove(e.player.name)
