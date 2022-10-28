@@ -24,7 +24,7 @@ internal object Events {
     val perm = Maps.newConcurrentMap<String, PermissibleRaphael>()!!
 
     @SubscribeEvent(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    fun e(e: RaphaelPlayerEvent) {
+    private fun onRP(e: RaphaelPlayerEvent) {
         if (e.eventType != EventType.VARIABLE) {
             submit {
                 RaphaelAPI.updatePermission()
@@ -43,7 +43,7 @@ internal object Events {
     }
 
     @SubscribeEvent(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    fun e(e: RaphaelGroupEvent) {
+    private fun onRG(e: RaphaelGroupEvent) {
         if (e.eventType == EventType.PERMISSION) {
             submit {
                 if (e.group == "default") {
@@ -69,7 +69,7 @@ internal object Events {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    fun e(e: PlayerJoinEvent) {
+    private fun onJoin(e: PlayerJoinEvent) {
         try {
             perm[e.player.name] = (PermissibleRaphael::class.java.unsafeInstance() as PermissibleRaphael).run {
                 init(e.player)
@@ -83,7 +83,7 @@ internal object Events {
     }
 
     @SubscribeEvent(priority = EventPriority.MONITOR)
-    fun e(e: PlayerQuitEvent) {
+    private fun onQuit(e: PlayerQuitEvent) {
         RaphaelAPI.cancelPermission(e.player)
         try {
             perm.remove(e.player.name)?.cancel()

@@ -90,7 +90,7 @@ object RaphaelAPI {
     }
 
     @SubscribeEvent
-    internal fun e(e: PlayerQuitEvent) {
+    private fun onQuit(e: PlayerQuitEvent) {
         attachment.remove(e.player.name)
     }
 }

@@ -286,7 +286,7 @@ class DatabaseSQL : Database() {
         private val cacheUserId = ConcurrentHashMap<String, Long>()
 
         @SubscribeEvent
-        fun e(e: PlayerQuitEvent) {
+        private fun onQuit(e: PlayerQuitEvent) {
             cacheUserId.remove(e.player.name)
         }
     }

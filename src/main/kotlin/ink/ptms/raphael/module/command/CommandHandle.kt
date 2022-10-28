@@ -25,7 +25,7 @@ open class CommandHandle {
         val baffle = Baffle.of(50, TimeUnit.MILLISECONDS)
 
         @SubscribeEvent
-        fun e(e: PlayerQuitEvent) {
+        private fun onQuit(e: PlayerQuitEvent) {
             baffle.reset(e.player.name)
         }
     }

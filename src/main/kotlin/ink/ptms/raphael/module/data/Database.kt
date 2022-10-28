@@ -40,7 +40,7 @@ abstract class Database {
         }
 
         @SubscribeEvent
-        fun e(e: PlayerLoginEvent) {
+        private fun onLogin(e: PlayerLoginEvent) {
             if (INSTANCE is DatabaseError) {
                 e.result = PlayerLoginEvent.Result.KICK_OTHER
                 e.kickMessage = "&4&loERROR! &r&oThe &4&lRaphael&r&o database failed to initialize.".colored()
