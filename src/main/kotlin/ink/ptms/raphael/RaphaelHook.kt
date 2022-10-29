@@ -22,22 +22,6 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class RaphaelHook : Permission() {
 
-    companion object {
-
-        private val permissionsMap = ConcurrentHashMap<String, SerializedPermissions>()
-
-        private val variablesMap = ConcurrentHashMap<String, SerializedVariables>()
-
-        private val groupsMap = ConcurrentHashMap<String, SerializedGroups>()
-
-        @SubscribeEvent
-        fun onQuit(e: PlayerQuitEvent) {
-            permissionsMap.remove(e.player.name)
-            variablesMap.remove(e.player.name)
-            groupsMap.remove(e.player.name)
-        }
-    }
-
     fun data() = createLocal("data.yml")
 
     override fun getName(): String = "Raphael"
@@ -372,4 +356,17 @@ class RaphaelHook : Permission() {
         data().set("Groups.$group", null)
         return true;
     }
+}
+
+private val permissionsMap = ConcurrentHashMap<String, SerializedPermissions>()
+
+private val variablesMap = ConcurrentHashMap<String, SerializedVariables>()
+
+private val groupsMap = ConcurrentHashMap<String, SerializedGroups>()
+
+@SubscribeEvent
+fun onQuit(e: PlayerQuitEvent) {
+    permissionsMap.remove(e.player.name)
+    variablesMap.remove(e.player.name)
+    groupsMap.remove(e.player.name)
 }
